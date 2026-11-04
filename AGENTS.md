@@ -126,6 +126,20 @@ Cada pasta tem um `README.md` explicando seu papel. Regras de dependência:
 - **Tipos de rota do Next 16**: `LayoutProps`/`PageProps` são globais gerados
   pelo `next typegen` (por isso o `typecheck` roda ele antes do `tsc`).
 
+## Notas de front-end
+
+- **Server Components por padrão**: no App Router todo componente roda no
+  servidor, a menos que o arquivo comece com `"use client"`. Use `"use client"`
+  só onde há estado, eventos ou hooks (ex.: formulários), o mais "na ponta"
+  possível.
+- **Tailwind 4 não tem `tailwind.config`**: a configuração é em CSS, no
+  `src/app/globals.css` (`@import "tailwindcss"` e cores/fontes em `@theme`).
+  Para criar cores do tema, adicione variáveis lá em vez de criar arquivo de config.
+- Fontes Geist já carregadas em `src/app/layout.tsx` (`font-sans`, `font-mono`).
+- Textos da interface em português do Brasil; `<html lang="pt-BR">`.
+- O front não precisa de `DATABASE_URL` para rodar: dados vêm de `src/mocks/`
+  até o endpoint real existir.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
