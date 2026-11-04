@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files: segredos nunca vão para o repositório (só o .env.example)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -42,3 +43,9 @@ next-env.d.ts
 
 # prisma (cliente gerado)
 /src/generated/
+
+# IAs: arquivos locais de cada dev
+.claude/settings.local.json
+CLAUDE.local.md
+.codex/
+AGENTS.override.md
