@@ -3,6 +3,12 @@
   // Território: Igor.
   "name": "Brasileirão Fantasy",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "features": {
+    // O Codespace instala hooks do Git LFS ao clonar; sem o git-lfs na imagem,
+    // commit e push falham. O gh deixa as IAs abrirem e consultarem PRs.
+    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
   "forwardPorts": [3000],
   "portsAttributes": {
     "3000": { "label": "Next.js", "onAutoForward": "notify" }

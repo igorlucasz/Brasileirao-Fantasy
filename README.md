@@ -7,7 +7,7 @@ Sleeper: você monta um time com jogadores reais de clubes diferentes, pontua
 conforme eles jogam nas partidas reais e enfrenta outro membro da sua liga a
 cada rodada, em confronto direto.
 
-> Status: **esqueleto**. Ainda não há telas, endpoints nem autenticação.
+> Status: **esqueleto** com banco no Neon configurado. Ainda não há telas, endpoints nem autenticação.
 > Veja o estado atual em [`docs/CONTEXTO.md`](docs/CONTEXTO.md).
 
 ## Documentação
@@ -31,8 +31,11 @@ Prisma 7 · Better Auth · Zod · Vercel.
    **Create codespace on main**.
 2. Espere o setup terminar (ele roda `npm install` e instala as CLIs do
    Claude Code e do Codex — veja `.devcontainer/post-create.sh`).
-3. Configure as variáveis de ambiente (próxima seção).
-4. Rode `npm run dev` e abra a porta **3000** que o Codespace encaminhar.
+3. Faça login na sua IA pelo terminal do Codespace: `claude` (Igor) ou
+   `codex` (PH), e siga as instruções.
+4. Configure as variáveis de ambiente (próxima seção). Para trabalhar só no
+   front com mocks, dá para pular este passo.
+5. Rode `npm run dev` e abra a porta **3000** que o Codespace encaminhar.
 
 ## Variáveis de ambiente
 

@@ -4,7 +4,7 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-04 (Igor, esqueleto do projeto)._
+_Última atualização: 2026-11-04 (Igor, setup do Neon e onboarding do PH)._
 
 ## 1. Visão geral
 
@@ -53,22 +53,26 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 
 ## 4. Decisões tomadas
 
-| Data       | Decisão                                                                                           | Motivo                                                                                                                                     |
-| ---------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| 2026-11-04 | Stack da seção 3 (Next.js fullstack, Tailwind, Neon, Prisma 7, Better Auth, Zod, Vercel Hobby)    | Ver coluna "Motivo" da seção 3.                                                                                                            |
-| 2026-11-04 | Neon em vez de Supabase                                                                           | Plano grátis do Supabase pausa projetos inativos; Neon tem branching de banco.                                                             |
-| 2026-11-04 | Divisão por territórios (pastas com dono) e `src/contracts/` compartilhado                        | Dois devs com duas IAs diferentes: evitar conflitos e deixar claro quem decide o quê.                                                      |
-| 2026-11-04 | `main` protegida, PR com revisão do outro dev, branches curtas, Conventional Commits em português | Workflow simples e seguro para iniciantes-intermediários.                                                                                  |
-| 2026-11-04 | `AGENTS.md` é a fonte única de instruções; `CLAUDE.md` só contém `@AGENTS.md`                     | Codex lê `AGENTS.md`; Claude Code importa o mesmo arquivo. Evita duas versões divergentes das regras.                                      |
-| 2026-11-04 | Prisma fixado na 7.10.1 (versão exata)                                                            | O `latest` do npm já aponta para o Prisma 8 (release candidate); decidimos usar a v7 estável. Atualizar só de propósito.                   |
-| 2026-11-04 | Cliente Prisma gerado em `src/generated/prisma` (fora do Git), gerado no `postinstall`            | Padrão do Prisma 7 (`prisma-client` exige `output`). Gerar no install garante que CI e Vercel tenham o cliente sem commitar código gerado. |
-| 2026-11-04 | `prisma.config.ts` carrega `.env.local` via dotenv                                                | O Next.js lê `.env.local`, mas o Prisma CLI não; assim os dois usam o mesmo arquivo.                                                       |
-| 2026-11-04 | Cliente do banco em `src/server/db` com `server-only` e singleton em `globalThis`                 | Impede import acidental no front e evita múltiplos pools de conexão no hot reload do dev.                                                  |
-| 2026-11-04 | Uma única `DATABASE_URL` (pooled) por enquanto                                                    | Simplicidade. Se migrations pelo pooler derem problema, adicionar uma URL direta separada só para o CLI (ver próximos passos).             |
-| 2026-11-04 | `typecheck` = `next typegen && tsc --noEmit`                                                      | No Next 16 os tipos `LayoutProps`/`PageProps` são gerados; `next-env.d.ts` não é versionado, então o `tsc` puro falha num clone limpo.     |
-| 2026-11-04 | Prettier com `prettier-plugin-tailwindcss` e `printWidth` 100                                     | Ordena classes do Tailwind automaticamente, reduzindo diffs entre os dois devs.                                                            |
-| 2026-11-04 | `allowScripts` do npm 11 libera só `prisma` e `@prisma/engines`                                   | O npm 11 bloqueia scripts de instalação por padrão; o Prisma precisa do seu para baixar o schema engine (usado em migrations).             |
-| 2026-11-04 | Devcontainer: imagem Node 24; Claude Code pelo instalador nativo, Codex pelo npm                  | Instalador nativo é o método recomendado na doc do Claude Code; o pacote npm do Codex não depende de install scripts.                      |
+| Data       | Decisão                                                                                              | Motivo                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-04 | Stack da seção 3 (Next.js fullstack, Tailwind, Neon, Prisma 7, Better Auth, Zod, Vercel Hobby)       | Ver coluna "Motivo" da seção 3.                                                                                                               |
+| 2026-11-04 | Neon em vez de Supabase                                                                              | Plano grátis do Supabase pausa projetos inativos; Neon tem branching de banco.                                                                |
+| 2026-11-04 | Divisão por territórios (pastas com dono) e `src/contracts/` compartilhado                           | Dois devs com duas IAs diferentes: evitar conflitos e deixar claro quem decide o quê.                                                         |
+| 2026-11-04 | `main` protegida, PR com revisão do outro dev, branches curtas, Conventional Commits em português    | Workflow simples e seguro para iniciantes-intermediários.                                                                                     |
+| 2026-11-04 | `AGENTS.md` é a fonte única de instruções; `CLAUDE.md` só contém `@AGENTS.md`                        | Codex lê `AGENTS.md`; Claude Code importa o mesmo arquivo. Evita duas versões divergentes das regras.                                         |
+| 2026-11-04 | Prisma fixado na 7.10.1 (versão exata)                                                               | O `latest` do npm já aponta para o Prisma 8 (release candidate); decidimos usar a v7 estável. Atualizar só de propósito.                      |
+| 2026-11-04 | Cliente Prisma gerado em `src/generated/prisma` (fora do Git), gerado no `postinstall`               | Padrão do Prisma 7 (`prisma-client` exige `output`). Gerar no install garante que CI e Vercel tenham o cliente sem commitar código gerado.    |
+| 2026-11-04 | `prisma.config.ts` carrega `.env.local` via dotenv                                                   | O Next.js lê `.env.local`, mas o Prisma CLI não; assim os dois usam o mesmo arquivo.                                                          |
+| 2026-11-04 | Cliente do banco em `src/server/db` com `server-only` e singleton em `globalThis`                    | Impede import acidental no front e evita múltiplos pools de conexão no hot reload do dev.                                                     |
+| 2026-11-04 | Uma única `DATABASE_URL` (pooled) por enquanto                                                       | Simplicidade. Se migrations pelo pooler derem problema, adicionar uma URL direta separada só para o CLI (ver próximos passos).                |
+| 2026-11-04 | `typecheck` = `next typegen && tsc --noEmit`                                                         | No Next 16 os tipos `LayoutProps`/`PageProps` são gerados; `next-env.d.ts` não é versionado, então o `tsc` puro falha num clone limpo.        |
+| 2026-11-04 | Prettier com `prettier-plugin-tailwindcss` e `printWidth` 100                                        | Ordena classes do Tailwind automaticamente, reduzindo diffs entre os dois devs.                                                               |
+| 2026-11-04 | `allowScripts` do npm 11 libera só `prisma` e `@prisma/engines`                                      | O npm 11 bloqueia scripts de instalação por padrão; o Prisma precisa do seu para baixar o schema engine (usado em migrations).                |
+| 2026-11-04 | Devcontainer: imagem Node 24; Claude Code pelo instalador nativo, Codex pelo npm                     | Instalador nativo é o método recomendado na doc do Claude Code; o pacote npm do Codex não depende de install scripts.                         |
+| 2026-11-04 | Devcontainer com as features `git-lfs` e `github-cli`                                                | O Codespace instala hooks do Git LFS ao clonar; sem o `git-lfs` na imagem, commit e push falham. O `gh` permite às IAs abrir e consultar PRs. |
+| 2026-11-04 | Histórico da `main` reescrito uma vez (remoção do trailer `Co-Authored-By` dos commits do esqueleto) | Pedido do Igor. Exceção pontual: a regra de nunca dar push direto na `main` continua valendo.                                                 |
+| 2026-11-04 | Neon: projeto `Brasileirao-Fantasy` (sa-east-1, PG 18); branches `production`, `dev-igor`, `dev-ph`  | Uma branch por dev isola os dados de desenvolvimento; `production` fica reservada para o deploy na Vercel.                                    |
+| 2026-11-04 | `DATABASE_URL` de cada dev vem dos Codespaces Secrets; `.env.local` pode ficar com ela vazia         | Variável de ambiente já definida tem prioridade sobre o `.env.local` (Next e dotenv não sobrescrevem), então o segredo fica fora do disco.    |
 
 ## 5. Pontos em aberto (não decidir sem conversar)
 
@@ -89,36 +93,75 @@ O que já existe e funciona (esqueleto, 2026-11-04):
   inicial provisória em português.
 - ESLint + Prettier integrados; scripts `lint`, `format`, `format:check`, `typecheck`, `build`.
 - Prisma 7 configurado para Neon (schema **sem modelos**, nenhuma migration,
-  cliente singleton em `src/server/db`). Ainda **sem banco conectado** (falta a `DATABASE_URL`).
+  cliente singleton em `src/server/db`).
+- Neon: projeto `Brasileirao-Fantasy` em São Paulo (`aws-sa-east-1`, Postgres 18)
+  com as branches `production` (padrão), `dev-igor` e `dev-ph` (as duas filhas da
+  `production`). Conexão testada no Codespace do Igor pela URL pooled da `dev-igor`
+  (query direta e `prisma migrate status` funcionam).
 - Zod instalado; `src/contracts/README.md` com exemplo comentado (nenhum contrato real ainda).
 - Estrutura de pastas por território, cada uma com `README.md`.
 - `.env.example`, `.gitignore`, devcontainer, CI no GitHub Actions e template de PR.
+- GitHub: PH (`pauloh-12`) já é colaborador do repositório.
 - `AGENTS.md`, `CLAUDE.md`, este arquivo e `HISTORICO.md`.
 
 O que **não** existe ainda: autenticação, modelos de banco, endpoints, telas,
-ingestão de dados, deploy na Vercel, banco no Neon.
+ingestão de dados, deploy na Vercel, tabelas no banco.
 
 ## 7. Próximos passos
 
-Configuração manual (Igor):
+### Configuração manual (Igor)
 
-1. Criar o projeto no Neon (São Paulo) com branches de dev para Igor e PH;
-   colocar a `DATABASE_URL` no `.env.local` e nos Codespaces Secrets.
-2. Proteger a `main` no GitHub (PR + 1 aprovação + CI obrigatório).
-3. Adicionar o PH como colaborador.
-4. Conectar o repositório à Vercel (Hobby, funções em São Paulo `gru1`).
+1. ~~Criar o projeto no Neon com branches de dev~~ (feito).
+2. ~~Adicionar o PH como colaborador~~ (feito).
+3. Passar ao PH, por canal privado, a connection string **pooled** da branch
+   `dev-ph` (console do Neon → Connect → branch `dev-ph` → "Connection pooling" ligado).
+4. Proteger a `main` no GitHub (PR + 1 aprovação + CI obrigatório). **Ainda não feito.**
+5. Conectar o repositório à Vercel (Hobby, funções em São Paulo `gru1`).
 
-Primeiras tarefas sugeridas:
+### Onboarding do PH (checklist)
 
-- **Igor**: `chore/auth-better-auth` — modelos de usuário/sessão do Better Auth,
-  primeira migration, rotas de auth e um endpoint `GET /api/health` que testa a
-  conexão com o banco. Em paralelo, pesquisar a fonte de dados do Brasileirão.
-- **PH**: `feat/layout-e-telas-auth` — layout base do app (cabeçalho, navegação,
-  tema) e telas de login/cadastro só com interface, sem integração.
-- **Os dois**: conversa para fechar pontuação, formato de liga e draft, e
-  definir os primeiros contratos em `src/contracts/` (usuário, liga, time).
+1. Aceitar o convite do repositório e criar um Codespace na `main` (ver README).
+2. Fazer login no Codex dentro do Codespace (`codex` e seguir as instruções).
+3. Cadastrar `DATABASE_URL` (branch `dev-ph`) nos Codespaces Secrets. **Não é
+   obrigatório para começar**: as telas usam mocks e o build funciona sem banco.
+4. Rodar `npm run dev` e abrir a porta 3000.
+5. Pedir ao Codex para ler `AGENTS.md` e este arquivo antes da primeira tarefa.
+6. Se já tinha clonado o repo antes de 2026-11-04 (reescrita da `main`), rodar
+   `git fetch && git checkout main && git reset --hard origin/main`.
 
-Pendências técnicas para lembrar:
+### Tarefas atuais
 
-- Se `prisma migrate` tiver problema com a URL pooled do Neon, adicionar uma
-  variável com a URL direta (sem `-pooler`) usada só pelo `prisma.config.ts`.
+**PH — `feat/layout-e-telas-auth`** (só interface, sem integração com back-end)
+
+- Layout da área logada em `src/app/(app)/layout.tsx`: cabeçalho, navegação
+  (Ligas, Meu time, Rodada, Classificação) e tema base em `src/app/globals.css`.
+- Telas `/login` e `/cadastro` em `src/app/(auth)/`, com layout próprio. Campos
+  sugeridos: login com e-mail e senha; cadastro com nome, e-mail, senha e
+  confirmação de senha (Better Auth usa e-mail e senha por padrão).
+- Formulários com validação só visual; o envio não chama nenhuma API ainda.
+- Componentes reutilizáveis (botão, campo de formulário, cabeçalho) em `src/components/`.
+- Pode substituir a página inicial provisória (`src/app/page.tsx`).
+- Não precisa de contratos nem mocks nesta tarefa.
+
+**Igor — `chore/auth-better-auth`**
+
+- Modelos de usuário/sessão do Better Auth, primeira migration e rotas de auth.
+- `GET /api/health` que testa a conexão com o banco.
+- Primeiro contrato em `src/contracts/` (usuário/sessão), combinado com o PH,
+  para ele ligar as telas de login/cadastro ao back-end na tarefa seguinte.
+- Em paralelo: proteger a `main`, conectar a Vercel e pesquisar a fonte de
+  dados do Brasileirão.
+
+**Os dois**
+
+- Conversa para fechar pontuação, formato de liga e draft (seção 5), e definir os
+  próximos contratos (liga, time, rodada).
+
+### Pendências técnicas para lembrar
+
+- `prisma migrate status` funcionou pela URL pooled; confirmar o mesmo com o
+  primeiro `prisma migrate dev`. Se der problema, adicionar uma variável com a
+  URL direta (sem `-pooler`) usada só pelo `prisma.config.ts`.
+- Codespaces criados antes da feature `git-lfs` no devcontainer precisam de
+  **Rebuild Container** (ou apagar os hooks em `.git/hooks`) para commit e push
+  funcionarem.
