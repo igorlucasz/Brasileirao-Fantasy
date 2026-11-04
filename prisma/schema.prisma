@@ -1,0 +1,18 @@
+// Schema do banco do Brasileirão Fantasy (Prisma ORM 7).
+// Território: Igor. Só o Igor altera este arquivo e roda migrations.
+// Docs: https://www.prisma.io/docs/orm/v7
+//
+// Ainda sem modelos de negócio: o modelo de dados está em aberto
+// (ver docs/CONTEXTO.md → "Pontos em aberto").
+
+generator client {
+  provider = "prisma-client"
+  // Cliente gerado em src/generated/prisma (ignorado pelo Git).
+  // Recriado por `npm run db:generate` e automaticamente no `npm install`.
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // A URL de conexão fica em prisma.config.ts (padrão do Prisma 7).
+}
