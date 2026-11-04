@@ -1,0 +1,49 @@
+# CI: roda em todo PR e em todo push na main.
+# Território: Igor.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  qualidade:
+    name: Lint, formatação, tipos e build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # O build não depende de segredos reais. Nenhum código acessa o banco
+      # durante o build; esta URL falsa só existe para nada quebrar se alguém
+      # ler a variável no carregamento de um módulo.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci # também roda "prisma generate" (postinstall)
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Formatação
+        run: npm run format:check
+
+      - name: Tipos
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build

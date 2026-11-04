@@ -1,0 +1,30 @@
+{
+  // Ambiente do GitHub Codespaces / Dev Containers do Brasileirão Fantasy.
+  // Território: Igor.
+  "name": "Brasileirão Fantasy",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": { "label": "Next.js", "onAutoForward": "notify" }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "remoteEnv": {
+    // Instalador nativo do Claude Code coloca o binário em ~/.local/bin.
+    "PATH": "${containerEnv:PATH}:/home/node/.local/bin"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Prisma.prisma",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "[prisma]": { "editor.defaultFormatter": "Prisma.prisma" }
+      }
+    }
+  }
+}
