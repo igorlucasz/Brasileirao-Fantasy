@@ -14,6 +14,17 @@ recente no topo.** Use o modelo abaixo.
 
 ---
 
+## 2026-11-04 — Setup do Neon
+
+- **Quem:** Igor (com Claude Code)
+- **Branch / PR:** `chore/setup-neon`
+- **Resumo:** projeto `Brasileirao-Fantasy` no Neon (São Paulo, Postgres 18) com
+  as branches `production`, `dev-igor` e `dev-ph`. `DATABASE_URL` do Igor nos
+  Codespaces Secrets apontando para o pooler da `dev-igor`; conexão testada com
+  query direta e `prisma migrate status`. Lockfile sincronizado (`engines` e
+  `hasInstallScript`). Nenhuma tabela criada ainda.
+- **Arquivos principais:** `docs/CONTEXTO.md`, `docs/HISTORICO.md`, `package-lock.json`.
+
 ## 2026-11-04 — Esqueleto do projeto
 
 - **Quem:** Igor (com Claude Code)
