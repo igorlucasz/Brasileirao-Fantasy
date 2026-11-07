@@ -1,13 +1,31 @@
-// Página inicial provisória (esqueleto do projeto).
-// Território: PH — pode substituir livremente quando começar as telas.
+import { Crown } from "@/components/crown";
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "DORMINHOCO",
+  description: "DORMINHOCO — fantasy football do Brasileirão.",
+};
+
 export default function Home() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-      <h1 className="text-4xl font-bold tracking-tight">Brasileirão Fantasy</h1>
-      <p className="max-w-md text-lg text-zinc-600 dark:text-zinc-400">
-        Monte seu time com jogadores reais do Brasileirão e enfrente seus amigos rodada a rodada.
-      </p>
-      <p className="text-sm text-zinc-500">Em construção.</p>
+    <main className="welcome">
+      <div className="welcome-arc welcome-arc-yellow" aria-hidden="true" />
+      <div className="welcome-arc welcome-arc-blue" aria-hidden="true" />
+      <div className="welcome-content">
+        <div className="welcome-logo">
+          <Crown className="welcome-crown" />
+          <h1>DORMINHOCO</h1>
+        </div>
+        <div className="welcome-actions">
+          <Link href="/cadastro" className="welcome-button welcome-button-primary">
+            Criar conta
+          </Link>
+          <Link href="/login" className="welcome-button welcome-button-secondary">
+            Entrar
+          </Link>
+        </div>
+      </div>
     </main>
   );
 }

@@ -4,7 +4,7 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-07 (Igor, autenticação com Better Auth)._
+_Última atualização: 2026-11-07 (PH, P1 e integração da main do Igor)._
 
 ## 1. Visão geral
 
@@ -16,7 +16,7 @@ Cada usuário monta uma equipe em um draft snake ao vivo, com jogadores reais ex
 na liga. As equipes pontuam conforme as partidas reais, e a cada rodada o usuário
 enfrenta outro membro da liga em confronto direto (head-to-head).
 
-Escopo inicial previsto (nada disso implementado ainda):
+Escopo do produto (estado de implementação na seção 6):
 
 - Cadastro e login de usuários
 - Criação de ligas e confrontos semanais entre usuários
@@ -88,6 +88,58 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 | 2026-11-07 | Consultas de jogadores dentro do draft (`/api/drafts/:id/jogadores`)                                 | Lista, rankings e situações congelam no início do draft, e a equipe proprietária depende da liga.                                                                                                                                                |
 | 2026-11-07 | A sala do draft devolve `sigla: null` até o início                                                   | O guia proíbe revelar quais equipes têm sigla pendente; a proteção fica na API, não só na tela.                                                                                                                                                  |
 
+Decisão de interface de 2026-11-07 (P1): tema base escuro com destaque verde,
+fundo global `#090a18` (azulado mais escuro, a pedido do PH),
+componentes compartilhados e layouts separados para acesso e aplicativo. Mantém a
+identidade visual consistente; somente formulários e navegação ativa usam componentes
+cliente. As rotas do aplicativo são prévias públicas até a integração do Better Auth.
+
+Decisão de interface de 2026-11-07 (DORMINHOCO): a tela inicial passa a seguir a
+receita visual do PH: verde-esmeralda, arcos amarelo e azul, coroa geométrica,
+Montserrat ExtraBold e somente os links Criar conta e Entrar na página inicial.
+A pedido do PH, a identidade se estende também ao login, cadastro e às quatro abas:
+fundo esmeralda, superfícies verdes, ações amarelas, coroa e marca DORMINHOCO,
+com Montserrat global. Substitui o tema anterior em todas as telas. Os formulários
+seguem visuais até a integração posterior do Better Auth; os arcos são menores nas páginas internas para priorizar o conteúdo.
+
+Decisão de navegação de 2026-11-07 (PH): as abas passam a ser Partida (comparação
+com o elenco adversário), Elenco (sua equipe), Jogadores (informações e waiver) e
+Liga (confrontos da rodada e classificação). As rotas antigas redirecionam para
+as novas áreas. As funcionalidades com dados reais (comparação, waiver e dados
+da liga) serão integradas nas próximas tarefas; a apresentação está em prévia.
+
+Decisão de interface de 2026-11-07 (PH): prévia da experiência dentro de uma liga,
+com perfil PH, equipe PH FC e Liga dos Amigos. Partida compara amostras de elencos;
+Elenco mostra jogadores; Jogadores permite busca, filtro e expansão de informações;
+Liga apresenta confrontos e classificação ilustrativos. Exemplos de apresentação
+ficam nos componentes, criados antes dos contratos; sua adaptação aos schemas fica para as próximas tarefas. Não há
+sessão real, cadastro, pontuação oficial ou aquisição no waiver. Os resultados exibidos não definem regras de pontuação.
+
+Decisão de produto de 2026-11-07 (PH): cada elenco terá **14 jogadores**, sendo
+**9 titulares: 1 GOL, 3 DEF, 3 MEI e 2 ATA**, mais **5 reservas**. Definição
+explícita do PH, aplicada à prévia de Elenco e aos dois times na aba Partida.
+As **5 vagas de reserva são livres por posição**, sem mínimo ou máximo por posição
+dentro dessas vagas (por exemplo: 4 ATA e 1 GOL), conforme esclarecimento do PH
+em 2026-11-07. Regras de substituição e pontuação do banco continuam em aberto. Os placares da prévia somam apenas os titulares como exemplo,
+sem estabelecer a regra definitiva. Contratos e banco não foram alterados.
+
+Decisão de 2026-11-07 (PH): implementação e prévia do Draft Board removidas
+por solicitação do usuário, restaurando a interface anterior. Permanecem Partida,
+Elenco, Jogadores e Liga, com 9 titulares e 5 reservas livres por posição.
+A pesquisa de fornecedores iniciada foi cancelada, sem alteração de back-end,
+schema, contratos ou banco.
+
+Decisão visual de 2026-11-07 (PH): etiquetas de posição em Partida, Elenco e
+Jogadores usam fundo vermelho para ATA, verde para MEI, azul para DEF e roxo
+para GOL, com abreviação branca legível. Paleta centralizada no tema CSS.
+
+Integração de 2026-11-07 (P1): preservados os contratos, o guia e o Better Auth
+recebidos de `origin/main`. O guia prevalece para regras de produto. As cores das
+etiquetas de Partida, Elenco e Jogadores são da prévia aprovada pelo PH; não
+substituem a paleta específica do Draft Board e do modal descrita no guia.
+As lacunas e os valores provisórios dos contratos serão conciliados em P2 antes
+da implementação das regras reais. O Draft Board permanece removido.
+
 ## 5. Pontos em aberto (não decidir sem conversar)
 
 - **Fonte dos dados reais do Brasileirão**: jogadores, partidas, scouts. API
@@ -106,7 +158,7 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 O que já existe e funciona (até 2026-11-07):
 
 - App Next.js 16 com App Router, TypeScript, Tailwind e alias `@/*`; página
-  inicial provisória em português.
+  inicial DORMINHOCO em português, com identidade esmeralda, amarela e azul.
 - ESLint + Prettier integrados; scripts `lint`, `format`, `format:check`, `typecheck`, `build`.
 - Prisma 7 configurado para Neon, com cliente singleton em `src/server/db` e a primeira
   migration (`add_better_auth`) aplicada só na `dev-igor`.
@@ -122,7 +174,15 @@ O que já existe e funciona (até 2026-11-07):
 - GitHub: PH (`pauloh-12`) já é colaborador do repositório e a `main` está protegida.
 - `AGENTS.md`, `CLAUDE.md`, este arquivo e `HISTORICO.md`.
 
-O que **não** existe ainda: modelos de negócio, endpoints do jogo, telas,
+P1 implementada: página inicial, layouts de acesso e aplicativo, navegação responsiva,
+login e cadastro com validação visual e componentes reutilizáveis. As rotas
+`/partida`, `/elenco`, `/jogadores` e `/liga` apresentam exemplos identificados de
+PH / PH FC / Liga dos Amigos, sem sessão real. Jogadores tem busca e filtros
+visuais; essas prévias não equivalem a P3/P4/P5 completos. As telas não enviam dados
+nem importam o cliente de autenticação. A integração fica para depois de o Igor
+aplicar a migration na `dev-ph`.
+
+O que **não** existe ainda: modelos de negócio, endpoints do jogo, telas integradas,
 ingestão de dados, deploy na Vercel. As únicas tabelas são as do Better Auth, só na `dev-igor`.
 
 ## 7. Próximos passos
@@ -159,7 +219,7 @@ As listas estão em ordem. Tarefas sem dependência entre si podem andar em para
 
 | Ordem | Tarefa                     | Entrega                                          | Depende de |
 | ----- | -------------------------- | ------------------------------------------------ | ---------- |
-| P1    | `feat/layout-e-telas-auth` | Layout, navegação, login e cadastro (só visual)  | Nada       |
+| P1    | `feat/layout-e-telas-auth` | Implementada: layout, navegação e acesso visual  | Nada       |
 | P2    | `docs/lacunas-guia`        | Formato do Draft: fechar as lacunas de `GUIA.md` | Nada       |
 | P3    | `feat/perfil-jogadores`    | Perfil completo (guia, seções 3 e 4), com mocks  | I1 (feita) |
 | P4    | `feat/draft-board`         | Draft Board (guia, seções 5 e 6), com mocks      | I1 (feita) |
@@ -168,7 +228,7 @@ As listas estão em ordem. Tarefas sem dependência entre si podem andar em para
 Detalhes de P1:
 
 - Layout da área logada em `src/app/(app)/layout.tsx`: cabeçalho, navegação
-  (Ligas, Meu time, Rodada, Classificação) e tema base em `src/app/globals.css`.
+  (Partida, Elenco, Jogadores e Liga) e tema base em `src/app/globals.css`.
 - Telas `/login` e `/cadastro` em `src/app/(auth)/`, com layout próprio. Campos
   sugeridos: login com e-mail e senha; cadastro com nome, e-mail, senha e
   confirmação de senha (Better Auth usa e-mail e senha por padrão).
@@ -209,6 +269,10 @@ então fechar as lacunas de P2 não deve mudar o formato deles.
   pontos em aberto de pontuação e formato de liga.
 
 ### Pendências técnicas para lembrar
+
+- Integração da P1 validada com lint, formatação, tipos e build. Neste Codespace,
+  o build passou com avisos do Better Auth por falta de `BETTER_AUTH_SECRET` e
+  `BETTER_AUTH_URL`; configurar no ambiente antes de testar autenticação real.
 
 - A primeira migration funcionou pela URL pooled, então não é preciso uma URL direta.
 - Codespaces criados antes da feature `git-lfs` no devcontainer precisam de
