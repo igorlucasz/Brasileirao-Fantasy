@@ -3,7 +3,7 @@
 Um jogo de fantasy baseado no Campeonato Brasileiro!
 
 Plataforma web de fantasy football do Brasileirão, inspirada no fantasy do
-Sleeper: você monta um time com jogadores reais de clubes diferentes, pontua
+Sleeper: você monta uma equipe com jogadores reais de clubes diferentes, pontua
 conforme eles jogam nas partidas reais e enfrenta outro membro da sua liga a
 cada rodada, em confronto direto.
 
@@ -16,6 +16,8 @@ cada rodada, em confronto direto.
   instruções para IAs (Codex e Claude Code leem este arquivo).
 - [`docs/CONTEXTO.md`](docs/CONTEXTO.md) — visão geral, stack, decisões,
   pontos em aberto e próximos passos.
+- [`docs/GUIA.md`](docs/GUIA.md) — como o produto funciona: draft, perfis e elenco.
+  É a referência de todas as regras de produto.
 - [`docs/HISTORICO.md`](docs/HISTORICO.md) — o que já foi feito, tarefa a tarefa.
 - [`src/contracts/README.md`](src/contracts/README.md) — como funcionam os
   contratos da API entre front e back.
@@ -71,5 +73,5 @@ Comandos de migration (`db:migrate`, `db:deploy`) são só para o Igor.
 2. `git checkout -b feat/minha-tarefa` (ou `fix/`, `chore/`, `docs/`)
 3. Commits pequenos em [Conventional Commits](https://www.conventionalcommits.org/pt-br/), em português.
 4. Antes do PR: `npm run lint && npm run typecheck && npm run build`.
-5. Abra o PR e preencha o template. A `main` é protegida: o merge exige PR e CI passando, sem
-   aprovação obrigatória. Mudanças em `src/contracts/` precisam de acordo com o outro dev.
+5. Abra o PR e preencha o template. A `main` é protegida: o merge exige PR e CI passando e é
+   decidido pelo Igor. Mudanças em `src/contracts/` precisam de acordo com o outro dev.

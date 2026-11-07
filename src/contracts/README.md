@@ -17,7 +17,7 @@ derivamos o tipo TypeScript com `z.infer`.
    de PR tem um campo para isso) e combine com o outro antes.
 2. Contratos não importam nada de `src/server/` nem de componentes React. Só
    `zod` e outros contratos.
-3. Um arquivo por recurso (ex.: `liga.ts`, `time.ts`, `rodada.ts`), exportando
+3. Um arquivo por recurso (ex.: `liga.ts`, `equipe.ts`, `rodada.ts`), exportando
    os schemas e os tipos.
 4. Nomes de campos em português, `camelCase` (ex.: `nomeTime`, `pontosRodada`).
 

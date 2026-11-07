@@ -4,21 +4,23 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-07 (Igor, arquitetura e divisão de tarefas)._
+_Última atualização: 2026-11-07 (Igor, contratos do draft e guia do produto)._
 
 ## 1. Visão geral
 
-Plataforma web de fantasy football do Campeonato Brasileiro (Brasileirão),
-inspirada no fantasy do Sleeper. O usuário monta um time com jogadores reais de
-clubes diferentes; conforme esses jogadores pontuam nas partidas reais, o
-usuário pontua. A cada rodada, ele enfrenta outro usuário da liga em confronto
-direto (head-to-head).
+Plataforma web de fantasy football do Campeonato Brasileiro, com foco na temporada de
+2027 e redraft anual. As regras do produto estão em [`GUIA.md`](GUIA.md), que é a
+referência do projeto: em conflito de regra de produto, vale o guia.
+
+Cada usuário monta uma equipe em um draft snake ao vivo, com jogadores reais exclusivos
+na liga. As equipes pontuam conforme as partidas reais, e a cada rodada o usuário
+enfrenta outro membro da liga em confronto direto (head-to-head).
 
 Escopo inicial previsto (nada disso implementado ainda):
 
 - Cadastro e login de usuários
 - Criação de ligas e confrontos semanais entre usuários
-- Montagem e gestão de time (escalação, troca de jogadores)
+- Draft ao vivo, Draft Board, perfil dos jogadores e painel de elenco
 - Pontuação automática com base nos dados das partidas reais
 - Classificação da liga e resultados por rodada
 
@@ -74,20 +76,25 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 | 2026-11-04 | Neon: projeto `Brasileirao-Fantasy` (sa-east-1, PG 18); branches `production`, `dev-igor`, `dev-ph`  | Uma branch por dev isola os dados de desenvolvimento; `production` fica reservada para o deploy na Vercel.                                                                                                                                       |
 | 2026-11-04 | `DATABASE_URL` de cada dev vem dos Codespaces Secrets; `.env.local` pode ficar com ela vazia         | Variável de ambiente já definida tem prioridade sobre o `.env.local` (Next e dotenv não sobrescrevem), então o segredo fica fora do disco.                                                                                                       |
 | 2026-11-07 | Ruleset da `main`: PR e CI obrigatórios, sem aprovação; sem force push e sem exclusão da branch      | Cada dev cuida do seu território e revisar todo o código do outro atrasaria os dois. Substitui a revisão obrigatória de 2026-11-04. Mudanças em `src/contracts/` continuam exigindo acordo. O check exigido é `Lint, formatação, tipos e build`. |
-| 2026-11-07 | Draft snake, com jogador exclusivo por time da liga                                                  | Modelo do Sleeper, que inspira o projeto. Combina com o Draft Board e o painel de elenco. As demais regras ficam com o PH.                                                                                                                       |
+| 2026-11-07 | Draft snake, com jogador exclusivo por equipe da liga                                                | Modelo do Sleeper, que inspira o projeto. Combina com o Draft Board e o painel de elenco. As demais regras ficam com o PH.                                                                                                                       |
 | 2026-11-07 | Draft sincronizado por polling de 2 a 3 segundos, com prazo salvo no banco                           | A Vercel não é adequada para manter WebSockets abertos e funções serverless não guardam estado.                                                                                                                                                  |
 | 2026-11-07 | Contrato antes da tela, com as regras do draft como dados                                            | O PH constrói com mocks sem esperar a API, e ajustar uma regra não muda o contrato.                                                                                                                                                              |
+| 2026-11-07 | `docs/GUIA.md` é a referência do produto                                                             | Descreve como o site vai funcionar. Em conflito de regra de produto, os demais documentos se ajustam a ele.                                                                                                                                      |
+| 2026-11-07 | Todo merge é decidido pelo Igor                                                                      | Cada dev cuida da sua parte; o PR serve para evitar mudanças indesejadas das IAs. Complementa a decisão do ruleset: o GitHub não bloqueia esse merge, é uma regra do time.                                                                       |
+| 2026-11-07 | Posições `GOL`, `DEF`, `MEI` e `ATA`; termo "equipe" para a equipe do fantasy                        | Seguem o glossário do guia.                                                                                                                                                                                                                      |
+| 2026-11-07 | Consultas de jogadores dentro do draft (`/api/drafts/:id/jogadores`)                                 | Lista, rankings e situações congelam no início do draft, e a equipe proprietária depende da liga.                                                                                                                                                |
+| 2026-11-07 | A sala do draft devolve `sigla: null` até o início                                                   | O guia proíbe revelar quais equipes têm sigla pendente; a proteção fica na API, não só na tela.                                                                                                                                                  |
 
 ## 5. Pontos em aberto (não decidir sem conversar)
 
 - **Fonte dos dados reais do Brasileirão**: jogadores, partidas, scouts. API
   paga? Gratuita? Scraping? Impacta custo, legalidade e frequência de atualização.
 - **Sistema de pontuação**: quais scouts valem pontos e quanto.
-- **Formato de liga**: número de times, temporada regular, playoffs?
-- **Regras do draft**: rodadas, tempo por escolha, composição do elenco, ordem inicial
-  e tempo esgotado. O PH propõe em `docs/REGRAS-DRAFT.md` (snake e exclusividade já
-  estão decididos).
-- **Escalação**: formação tática e trocas depois do draft.
+- **Formato de liga**: temporada regular e playoffs.
+- **Lacunas do guia**: número de equipes, rodadas, limites por posição, momento do sorteio,
+  regras de troca de escolhas, reservas no sorteio, desempate de projeções e decisão 265.
+  O PH fecha esses pontos em `docs/GUIA.md`.
+- **Escalação**: formação tática e trocas depois do draft. O guia ainda não trata disso.
 - **Modelo de dados**: depende das regras do draft e da fonte de dados.
 - **Custos futuros de hospedagem**: quando sair do Vercel Hobby e do plano grátis do Neon.
 
@@ -104,7 +111,7 @@ O que já existe e funciona (esqueleto, 2026-11-04):
   com as branches `production` (padrão), `dev-igor` e `dev-ph` (as duas filhas da
   `production`). Conexão testada no Codespace do Igor pela URL pooled da `dev-igor`
   (query direta e `prisma migrate status` funcionam).
-- Zod instalado; `src/contracts/README.md` com exemplo comentado (nenhum contrato real ainda).
+- Contratos Zod de jogador, equipe, draft, elenco e erro em `src/contracts/`, seguindo o guia.
 - Estrutura de pastas por território, cada uma com `README.md`.
 - `.env.example`, `.gitignore`, devcontainer, CI no GitHub Actions e template de PR.
 - GitHub: PH (`pauloh-12`) já é colaborador do repositório e a `main` está protegida.
@@ -141,13 +148,13 @@ As listas estão em ordem. Tarefas sem dependência entre si podem andar em para
 
 #### PH (front-end)
 
-| Ordem | Tarefa                     | Entrega                                            | Depende de |
-| ----- | -------------------------- | -------------------------------------------------- | ---------- |
-| P1    | `feat/layout-e-telas-auth` | Layout, navegação, login e cadastro (só visual)    | Nada       |
-| P2    | `docs/regras-draft`        | Formato do Draft: `docs/REGRAS-DRAFT.md`           | Nada       |
-| P3    | `feat/perfil-jogadores`    | Lista, busca e perfil de jogadores, com mocks      | I1         |
-| P4    | `feat/draft-board`         | Draft Board e sala do draft, com simulação em mock | I1         |
-| P5    | `feat/painel-elenco`       | Painel de elenco, com mocks                        | I1         |
+| Ordem | Tarefa                     | Entrega                                          | Depende de |
+| ----- | -------------------------- | ------------------------------------------------ | ---------- |
+| P1    | `feat/layout-e-telas-auth` | Layout, navegação, login e cadastro (só visual)  | Nada       |
+| P2    | `docs/lacunas-guia`        | Formato do Draft: fechar as lacunas de `GUIA.md` | Nada       |
+| P3    | `feat/perfil-jogadores`    | Perfil completo (guia, seções 3 e 4), com mocks  | I1 (feita) |
+| P4    | `feat/draft-board`         | Draft Board (guia, seções 5 e 6), com mocks      | I1 (feita) |
+| P5    | `feat/painel-elenco`       | Painel de elenco (guia, seção 7), com mocks      | I1 (feita) |
 
 Detalhes de P1:
 
@@ -161,27 +168,25 @@ Detalhes de P1:
 - Pode substituir a página inicial provisória (`src/app/page.tsx`).
 - Não precisa de contratos nem mocks nesta tarefa.
 
-Detalhes de P2: o documento define número de rodadas, tempo por escolha, composição
-do elenco, ordem inicial e o que acontece se o tempo acabar ou alguém faltar. O PH
-propõe e combina com o Igor. Não depende de código.
+Detalhes de P2: `docs/GUIA.md` já define o formato do draft. Falta fechar com o Igor as
+lacunas listadas na seção 5, registrando cada decisão no próprio guia. Não depende de código.
 
 #### Igor (back-end)
 
-| Ordem | Tarefa                      | Entrega                                                            | Depende de  |
-| ----- | --------------------------- | ------------------------------------------------------------------ | ----------- |
-| I1    | `feat/contratos-draft`      | Contratos de jogador, draft e elenco, combinados com o PH          | Nada        |
-| I2    | `chore/auth-better-auth`    | Better Auth, primeira migration, `/api/health`, contrato de sessão | Nada        |
-| I3    | Pesquisa                    | Fonte de dados do Brasileirão, com a decisão registrada aqui       | Nada        |
-| I4    | `feat/modelo-dados`         | Modelos de campeonato, liga, draft e elenco                        | I2 e P2     |
-| I5    | `feat/ingestao-jogadores`   | Carga de clubes e jogadores                                        | I3 e I4     |
-| I6    | `feat/api-ligas`            | Criar liga, convidar e entrar                                      | I4          |
-| I7    | `feat/api-draft`            | Motor do draft e endpoints                                         | I4 e I6     |
-| I8    | `feat/api-jogadores-elenco` | Endpoints de jogadores e elenco                                    | I4 e I5     |
-| I9    | `chore/deploy-vercel`       | Deploy em produção (Vercel Hobby, `gru1`)                          | Em paralelo |
+| Ordem  | Tarefa                      | Entrega                                                            | Depende de  |
+| ------ | --------------------------- | ------------------------------------------------------------------ | ----------- |
+| ~~I1~~ | `feat/contratos-draft`      | Contratos de jogador, equipe, draft e elenco (feito)               | Nada        |
+| I2     | `chore/auth-better-auth`    | Better Auth, primeira migration, `/api/health`, contrato de sessão | Nada        |
+| I3     | Pesquisa                    | Fonte de dados do Brasileirão, com a decisão registrada aqui       | Nada        |
+| I4     | `feat/modelo-dados`         | Modelos de campeonato, liga, draft e elenco                        | I2 e P2     |
+| I5     | `feat/ingestao-jogadores`   | Carga de clubes e jogadores                                        | I3 e I4     |
+| I6     | `feat/api-ligas`            | Criar liga, convidar e entrar                                      | I4          |
+| I7     | `feat/api-draft`            | Motor do draft e endpoints                                         | I4 e I6     |
+| I8     | `feat/api-jogadores-elenco` | Endpoints de jogadores e elenco                                    | I4 e I5     |
+| I9     | `chore/deploy-vercel`       | Deploy em produção (Vercel Hobby, `gru1`)                          | Em paralelo |
 
-I1 vem primeiro porque libera P3, P4 e P5. As regras entram como dados
-(`rodadas`, `segundosPorEscolha`, `composicaoElenco`), então os contratos usam
-valores provisórios e não esperam P2.
+Os contratos tratam regras como dados (`rodadas`, `segundosPorEscolha`, `composicaoElenco`),
+então fechar as lacunas de P2 não deve mudar o formato deles.
 
 #### Integração e fases seguintes
 
@@ -230,7 +235,7 @@ Exemplo: escolher um jogador no draft.
 
 1. A tela chama `POST /api/drafts/:id/escolhas`.
 2. O route handler confere a sessão do Better Auth e valida o corpo com o Zod.
-3. O service `draft` confere se é a vez do time e se o jogador está livre.
+3. O service `draft` confere se é a vez da equipe e se o jogador está livre.
 4. O Prisma grava a escolha em uma transação no Neon.
 5. A resposta volta no formato do contrato, e a tela atualiza.
 
@@ -244,10 +249,10 @@ dados são dinâmicos por padrão e o cache é opcional; dados do usuário não 
 - **Relógio:** o banco guarda o prazo da escolha atual como data absoluta. A tela só faz
   a contagem regressiva, e quem decide é o servidor.
 - **Disputa:** índices únicos em `(draftId, jogadorId)` e `(draftId, numeroEscolha)`
-  impedem que o mesmo jogador vá para dois times em requisições simultâneas.
-- **Tempo esgotado:** a próxima requisição detecta o prazo vencido e faz a escolha
-  automática na mesma transação. Sem ninguém na sala, o draft só avança quando alguém
-  voltar, o que é aceitável para ligas de amigos.
+  impedem que o mesmo jogador vá para duas equipes em requisições simultâneas.
+- **Tempo esgotado:** o draft não para, nem com todos offline. A próxima requisição aplica
+  em sequência todos os Auto-Picks vencidos, usando o prazo de cada um, e o resultado é o
+  mesmo de um draft contínuo.
 - **Custo:** o polling consome funções da Vercel e computação do Neon. Se apertar, um
   serviço de tempo real pode substituir a sincronização sem mudar as regras.
 
