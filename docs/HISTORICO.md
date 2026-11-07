@@ -14,6 +14,15 @@ recente no topo.** Use o modelo abaixo.
 
 ---
 
+## 2026-11-07 — Arquitetura e divisão de tarefas
+
+- **Quem:** Igor (com Claude Code)
+- **Branch / PR:** `docs/planejamento-tarefas`
+- **Resumo:** registro da macroarquitetura e das tarefas separadas entre PH e Igor,
+  com dependências, para os dois trabalharem de forma independente. Decididos o draft
+  snake com jogador exclusivo, o polling na sala do draft e o contrato antes da tela.
+- **Arquivos principais:** `docs/CONTEXTO.md`, `docs/HISTORICO.md`.
+
 ## 2026-11-07 — Proteção da `main` e merge do onboarding
 
 - **Quem:** Igor (com Claude Code)
