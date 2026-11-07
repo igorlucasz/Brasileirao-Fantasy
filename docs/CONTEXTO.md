@@ -4,7 +4,7 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-07 (Igor, contratos do draft e guia do produto)._
+_Última atualização: 2026-11-07 (Igor, autenticação com Better Auth)._
 
 ## 1. Visão geral
 
@@ -44,7 +44,7 @@ Escopo inicial previsto (nada disso implementado ainda):
 | Estilo            | Tailwind CSS 4                                  | Padrão do create-next-app, rápido de iterar, muito material de referência.                                                                                                |
 | Banco             | PostgreSQL no Neon, região São Paulo            | Escolhido em vez do Supabase porque o plano grátis do Supabase pausa projetos inativos. O Neon permite uma branch do banco por branch do Git / por dev.                   |
 | ORM               | Prisma 7 (sem motor Rust)                       | Mais usado no mercado e melhor documentado. A v7 usa cliente em TypeScript + driver adapter (`@prisma/adapter-neon`), mais leve em serverless.                            |
-| Autenticação      | Better Auth                                     | Usuários ficam no nosso próprio banco (sem dependência de serviço externo). **Ainda não implementado.**                                                                   |
+| Autenticação      | Better Auth                                     | Usuários ficam no nosso próprio banco (sem dependência de serviço externo).                                                                                               |
 | Contratos da API  | Zod 4, em `src/contracts/`                      | Fonte única dos tipos compartilhados entre front e back, com validação em tempo de execução.                                                                              |
 | Qualidade         | ESLint + Prettier, CI no GitHub Actions         | Padroniza código das duas IAs e dos dois devs; o CI barra PR quebrado.                                                                                                    |
 | Hospedagem        | Vercel Hobby (grátis) por enquanto              | Integração nativa com Next.js e preview por PR. Limites conhecidos: cron só 1x/dia, uso não comercial, 1 dev no painel. Migrar para Railway ou Vercel Pro quando apertar. |
@@ -80,7 +80,10 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 | 2026-11-07 | Draft sincronizado por polling de 2 a 3 segundos, com prazo salvo no banco                           | A Vercel não é adequada para manter WebSockets abertos e funções serverless não guardam estado.                                                                                                                                                  |
 | 2026-11-07 | Contrato antes da tela, com as regras do draft como dados                                            | O PH constrói com mocks sem esperar a API, e ajustar uma regra não muda o contrato.                                                                                                                                                              |
 | 2026-11-07 | `docs/GUIA.md` é a referência do produto                                                             | Descreve como o site vai funcionar. Em conflito de regra de produto, os demais documentos se ajustam a ele.                                                                                                                                      |
-| 2026-11-07 | Todo merge é decidido pelo Igor                                                                      | Cada dev cuida da sua parte; o PR serve para evitar mudanças indesejadas das IAs. Complementa a decisão do ruleset: o GitHub não bloqueia esse merge, é uma regra do time.                                                                       |
+| 2026-11-07 | Cada dev decide o merge dos próprios PRs, de forma independente                                      | Cada um cuida da sua parte, e a IA de cada dev só faz merge com autorização do seu dono. O PR serve para evitar mudanças indesejadas das IAs. Substitui a decisão de merge centralizado no Igor.                                                 |
+| 2026-11-07 | Autenticação só com e-mail e senha, sem verificação nem recuperação por enquanto                     | Essas funções exigem um serviço de envio de e-mail, previsto para antes do lançamento público.                                                                                                                                                   |
+| 2026-11-07 | Tabelas do Better Auth com nomes padrão em inglês; a API expõe nomes em português                    | Mantém a compatibilidade com o CLI da biblioteca. `/api/sessao` isola o front desses nomes.                                                                                                                                                      |
+| 2026-11-07 | `better-auth` fixado na 1.7.18 (versão exata)                                                        | Evita mudanças não planejadas em autenticação, e o `prisma-adapter` acompanha a versão.                                                                                                                                                          |
 | 2026-11-07 | Posições `GOL`, `DEF`, `MEI` e `ATA`; termo "equipe" para a equipe do fantasy                        | Seguem o glossário do guia.                                                                                                                                                                                                                      |
 | 2026-11-07 | Consultas de jogadores dentro do draft (`/api/drafts/:id/jogadores`)                                 | Lista, rankings e situações congelam no início do draft, e a equipe proprietária depende da liga.                                                                                                                                                |
 | 2026-11-07 | A sala do draft devolve `sigla: null` até o início                                                   | O guia proíbe revelar quais equipes têm sigla pendente; a proteção fica na API, não só na tela.                                                                                                                                                  |
@@ -105,8 +108,10 @@ O que já existe e funciona (esqueleto, 2026-11-04):
 - App Next.js 16 com App Router, TypeScript, Tailwind e alias `@/*`; página
   inicial provisória em português.
 - ESLint + Prettier integrados; scripts `lint`, `format`, `format:check`, `typecheck`, `build`.
-- Prisma 7 configurado para Neon (schema **sem modelos**, nenhuma migration,
-  cliente singleton em `src/server/db`).
+- Prisma 7 configurado para Neon, com cliente singleton em `src/server/db` e a primeira
+  migration (`add_better_auth`) aplicada só na `dev-igor`.
+- Autenticação com Better Auth: cadastro, login e logout por e-mail e senha.
+- Endpoints `GET /api/health`, `GET /api/sessao` e rotas `/api/auth/*`.
 - Neon: projeto `Brasileirao-Fantasy` em São Paulo (`aws-sa-east-1`, Postgres 18)
   com as branches `production` (padrão), `dev-igor` e `dev-ph` (as duas filhas da
   `production`). Conexão testada no Codespace do Igor pela URL pooled da `dev-igor`
@@ -117,7 +122,7 @@ O que já existe e funciona (esqueleto, 2026-11-04):
 - GitHub: PH (`pauloh-12`) já é colaborador do repositório e a `main` está protegida.
 - `AGENTS.md`, `CLAUDE.md`, este arquivo e `HISTORICO.md`.
 
-O que **não** existe ainda: autenticação, modelos de banco, endpoints, telas,
+O que **não** existe ainda: modelos de negócio, endpoints do jogo, telas,
 ingestão de dados, deploy na Vercel, tabelas no banco.
 
 ## 7. Próximos passos
@@ -130,6 +135,10 @@ ingestão de dados, deploy na Vercel, tabelas no banco.
    `dev-ph` (console do Neon → Connect → branch `dev-ph` → "Connection pooling" ligado).
 4. ~~Proteger a `main` no GitHub (PR + CI obrigatórios)~~ (feito).
 5. Conectar o repositório à Vercel (Hobby, funções em São Paulo `gru1`).
+6. Antes de o PH integrar as telas de login, aplicar as migrations na `dev-ph`
+   (`npm run db:deploy` com a URL dela). A `production` fica para a I9.
+7. Cada dev define `BETTER_AUTH_SECRET` e `BETTER_AUTH_URL` no próprio ambiente
+   (ver `.env.example`). A produção usa um segredo próprio.
 
 ### Onboarding do PH (checklist)
 
@@ -173,33 +182,35 @@ lacunas listadas na seção 5, registrando cada decisão no próprio guia. Não 
 
 #### Igor (back-end)
 
-| Ordem  | Tarefa                      | Entrega                                                            | Depende de  |
-| ------ | --------------------------- | ------------------------------------------------------------------ | ----------- |
-| ~~I1~~ | `feat/contratos-draft`      | Contratos de jogador, equipe, draft e elenco (feito)               | Nada        |
-| I2     | `chore/auth-better-auth`    | Better Auth, primeira migration, `/api/health`, contrato de sessão | Nada        |
-| I3     | Pesquisa                    | Fonte de dados do Brasileirão, com a decisão registrada aqui       | Nada        |
-| I4     | `feat/modelo-dados`         | Modelos de campeonato, liga, draft e elenco                        | I2 e P2     |
-| I5     | `feat/ingestao-jogadores`   | Carga de clubes e jogadores                                        | I3 e I4     |
-| I6     | `feat/api-ligas`            | Criar liga, convidar e entrar                                      | I4          |
-| I7     | `feat/api-draft`            | Motor do draft e endpoints                                         | I4 e I6     |
-| I8     | `feat/api-jogadores-elenco` | Endpoints de jogadores e elenco                                    | I4 e I5     |
-| I9     | `chore/deploy-vercel`       | Deploy em produção (Vercel Hobby, `gru1`)                          | Em paralelo |
+| Ordem  | Tarefa                      | Entrega                                                        | Depende de  |
+| ------ | --------------------------- | -------------------------------------------------------------- | ----------- |
+| ~~I1~~ | `feat/contratos-draft`      | Contratos de jogador, equipe, draft e elenco (feito)           | Nada        |
+| ~~I2~~ | `chore/auth-better-auth`    | Better Auth, primeira migration, `/api/health`, sessão (feito) | Nada        |
+| I3     | Pesquisa                    | Fonte de dados do Brasileirão, com a decisão registrada aqui   | Nada        |
+| I4     | `feat/modelo-dados`         | Modelos de campeonato, liga, draft e elenco                    | I2 e P2     |
+| I5     | `feat/ingestao-jogadores`   | Carga de clubes e jogadores                                    | I3 e I4     |
+| I6     | `feat/api-ligas`            | Criar liga, convidar e entrar                                  | I4          |
+| I7     | `feat/api-draft`            | Motor do draft e endpoints                                     | I4 e I6     |
+| I8     | `feat/api-jogadores-elenco` | Endpoints de jogadores e elenco                                | I4 e I5     |
+| I9     | `chore/deploy-vercel`       | Deploy em produção (Vercel Hobby, `gru1`)                      | Em paralelo |
 
 Os contratos tratam regras como dados (`rodadas`, `segundosPorEscolha`, `composicaoElenco`),
 então fechar as lacunas de P2 não deve mudar o formato deles.
 
 #### Integração e fases seguintes
 
-- Ligar auth, perfil, Draft Board e elenco aos endpoints reais, com um PR do PH para
-  cada um, conforme I2, I7 e I8 ficarem prontos.
+- Ligar login e cadastro com `authClient` (`src/lib/auth-client.ts`), validando com os
+  schemas de `src/contracts/sessao.ts`. Depende do item 6 da configuração manual.
+- Ligar perfil, Draft Board e elenco aos endpoints reais, com um PR do PH para
+  cada um, conforme I7 e I8 ficarem prontos.
+- Antes do lançamento público: serviço de e-mail para verificação de conta e recuperação
+  de senha.
 - Depois do draft: pontuação, escalação, confrontos e classificação. Exigem fechar os
   pontos em aberto de pontuação e formato de liga.
 
 ### Pendências técnicas para lembrar
 
-- `prisma migrate status` funcionou pela URL pooled; confirmar o mesmo com o
-  primeiro `prisma migrate dev`. Se der problema, adicionar uma variável com a
-  URL direta (sem `-pooler`) usada só pelo `prisma.config.ts`.
+- A primeira migration funcionou pela URL pooled, então não é preciso uma URL direta.
 - Codespaces criados antes da feature `git-lfs` no devcontainer precisam de
   **Rebuild Container** (ou apagar os hooks em `.git/hooks`) para commit e push
   funcionarem.

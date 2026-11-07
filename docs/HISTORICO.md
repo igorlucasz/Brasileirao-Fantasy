@@ -14,6 +14,18 @@ recente no topo.** Use o modelo abaixo.
 
 ---
 
+## 2026-11-07 — Autenticação com Better Auth
+
+- **Quem:** Igor (com Claude Code)
+- **Branch / PR:** `chore/auth-better-auth`
+- **Resumo:** cadastro, login e logout por e-mail e senha com Better Auth 1.7.18, usando o
+  cliente Prisma existente. Primeira migration aplicada na `dev-igor`, pela URL pooled.
+  Criados `GET /api/health`, `GET /api/sessao`, os contratos de sessão e saúde e o
+  `authClient` para as telas. Fluxo testado de ponta a ponta. O merge passou a ser
+  decidido de forma independente por cada dev.
+- **Arquivos principais:** `src/server/auth/`, `src/app/api/`, `src/lib/auth-client.ts`,
+  `src/contracts/sessao.ts`, `prisma/schema.prisma`, `prisma/migrations/`.
+
 ## 2026-11-07 — Contratos do draft e guia do produto
 
 - **Quem:** Igor (com Claude Code)
