@@ -64,7 +64,7 @@ O `npm install` já roda `prisma generate` (postinstall).
 | ----------------------- | ----------- | --------------------------------------------- |
 | `.devcontainer/`        | Igor        | Ambiente do Codespace                         |
 | `.github/`              | Igor        | CI e template de PR                           |
-| `docs/`                 | **Os dois** | Contexto e histórico do projeto               |
+| `docs/`                 | **Os dois** | Contexto, histórico, guia e fonte de dados    |
 | `prisma/`               | Igor        | Schema e migrations                           |
 | `src/app/(auth)/`       | PH          | Telas de login e cadastro                     |
 | `src/app/(app)/`        | PH          | Ligas, draft, equipe, rodada, classificação   |

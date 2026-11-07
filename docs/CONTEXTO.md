@@ -4,7 +4,7 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-07 (Igor, autenticação com Better Auth)._
+_Última atualização: 2026-11-07 (Igor, fonte de dados)._
 
 ## 1. Visão geral
 
@@ -38,17 +38,17 @@ Escopo inicial previsto (nada disso implementado ainda):
 
 ## 3. Stack (e por quê)
 
-| Camada            | Escolha                                         | Motivo                                                                                                                                                                    |
-| ----------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework         | Next.js 16 (App Router), fullstack, TypeScript  | Front e API no mesmo projeto e no mesmo deploy; um repositório só para os dois devs; TypeScript compartilha tipos entre front e back.                                     |
-| Estilo            | Tailwind CSS 4                                  | Padrão do create-next-app, rápido de iterar, muito material de referência.                                                                                                |
-| Banco             | PostgreSQL no Neon, região São Paulo            | Escolhido em vez do Supabase porque o plano grátis do Supabase pausa projetos inativos. O Neon permite uma branch do banco por branch do Git / por dev.                   |
-| ORM               | Prisma 7 (sem motor Rust)                       | Mais usado no mercado e melhor documentado. A v7 usa cliente em TypeScript + driver adapter (`@prisma/adapter-neon`), mais leve em serverless.                            |
-| Autenticação      | Better Auth                                     | Usuários ficam no nosso próprio banco (sem dependência de serviço externo).                                                                                               |
-| Contratos da API  | Zod 4, em `src/contracts/`                      | Fonte única dos tipos compartilhados entre front e back, com validação em tempo de execução.                                                                              |
-| Qualidade         | ESLint + Prettier, CI no GitHub Actions         | Padroniza código das duas IAs e dos dois devs; o CI barra PR quebrado.                                                                                                    |
-| Hospedagem        | Vercel Hobby (grátis) por enquanto              | Integração nativa com Next.js e preview por PR. Limites conhecidos: cron só 1x/dia, uso não comercial, 1 dev no painel. Migrar para Railway ou Vercel Pro quando apertar. |
-| Ingestão de dados | GitHub Action agendado chamando uma rota da API | Contorna o limite de cron da Vercel Hobby. **Implementar só no futuro.**                                                                                                  |
+| Camada            | Escolha                                                             | Motivo                                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework         | Next.js 16 (App Router), fullstack, TypeScript                      | Front e API no mesmo projeto e no mesmo deploy; um repositório só para os dois devs; TypeScript compartilha tipos entre front e back.                                     |
+| Estilo            | Tailwind CSS 4                                                      | Padrão do create-next-app, rápido de iterar, muito material de referência.                                                                                                |
+| Banco             | PostgreSQL no Neon, região São Paulo                                | Escolhido em vez do Supabase porque o plano grátis do Supabase pausa projetos inativos. O Neon permite uma branch do banco por branch do Git / por dev.                   |
+| ORM               | Prisma 7 (sem motor Rust)                                           | Mais usado no mercado e melhor documentado. A v7 usa cliente em TypeScript + driver adapter (`@prisma/adapter-neon`), mais leve em serverless.                            |
+| Autenticação      | Better Auth                                                         | Usuários ficam no nosso próprio banco (sem dependência de serviço externo).                                                                                               |
+| Contratos da API  | Zod 4, em `src/contracts/`                                          | Fonte única dos tipos compartilhados entre front e back, com validação em tempo de execução.                                                                              |
+| Qualidade         | ESLint + Prettier, CI no GitHub Actions                             | Padroniza código das duas IAs e dos dois devs; o CI barra PR quebrado.                                                                                                    |
+| Hospedagem        | Vercel Hobby (grátis) por enquanto                                  | Integração nativa com Next.js e preview por PR. Limites conhecidos: cron só 1x/dia, uso não comercial, 1 dev no painel. Migrar para Railway ou Vercel Pro quando apertar. |
+| Ingestão de dados | API do Cartola, por GitHub Action agendado chamando uma rota da API | Gratuita e com os dados necessários, mas não oficial. A Action contorna o limite de cron da Vercel Hobby. Detalhes e riscos em `FONTE-DADOS.md`.                          |
 
 Versões instaladas no esqueleto: Next 16.4.5, React 19.3, Tailwind 4,
 Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
@@ -84,15 +84,18 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 | 2026-11-07 | Autenticação só com e-mail e senha, sem verificação nem recuperação por enquanto                     | Essas funções exigem um serviço de envio de e-mail, previsto para antes do lançamento público.                                                                                                                                                   |
 | 2026-11-07 | Tabelas do Better Auth com nomes padrão em inglês; a API expõe nomes em português                    | Mantém a compatibilidade com o CLI da biblioteca. `/api/sessao` isola o front desses nomes.                                                                                                                                                      |
 | 2026-11-07 | `better-auth` fixado na 1.7.18 (versão exata)                                                        | Evita mudanças não planejadas em autenticação, e o `prisma-adapter` acompanha a versão.                                                                                                                                                          |
+| 2026-11-07 | Fonte de dados: API do Cartola, com troca possível no futuro                                         | Decisão do Igor. É gratuita e tem jogadores, status e eventos por rodada. O uso não tem autorização confirmada; riscos em `FONTE-DADOS.md`.                                                                                                      |
+| 2026-11-07 | Produto público em 2027, sem cobrança                                                                | Define o nível de risco aceitável e exige revisão de termos antes do lançamento.                                                                                                                                                                 |
+| 2026-11-07 | Fonte isolada por interface em `src/server/ingestion/`                                               | Trocar a fonte deve afetar só o adaptador, sem mudar banco, API ou telas.                                                                                                                                                                        |
+| 2026-11-07 | Pontuação própria, sem fotos, escudos ou marca do Cartola                                            | Evita copiar a tabela e usar imagens da Globo. O guia já prevê silhueta, e os contratos aceitam `null`.                                                                                                                                          |
 | 2026-11-07 | Posições `GOL`, `DEF`, `MEI` e `ATA`; termo "equipe" para a equipe do fantasy                        | Seguem o glossário do guia.                                                                                                                                                                                                                      |
 | 2026-11-07 | Consultas de jogadores dentro do draft (`/api/drafts/:id/jogadores`)                                 | Lista, rankings e situações congelam no início do draft, e a equipe proprietária depende da liga.                                                                                                                                                |
 | 2026-11-07 | A sala do draft devolve `sigla: null` até o início                                                   | O guia proíbe revelar quais equipes têm sigla pendente; a proteção fica na API, não só na tela.                                                                                                                                                  |
 
 ## 5. Pontos em aberto (não decidir sem conversar)
 
-- **Fonte dos dados reais do Brasileirão**: jogadores, partidas, scouts. API
-  paga? Gratuita? Scraping? Impacta custo, legalidade e frequência de atualização.
-- **Sistema de pontuação**: quais scouts valem pontos e quanto.
+- **Sistema de pontuação**: quanto vale cada evento, entre os disponíveis na fonte
+  (ver [`FONTE-DADOS.md`](FONTE-DADOS.md)).
 - **Formato de liga**: temporada regular e playoffs.
 - **Lacunas do guia**: número de equipes, rodadas, limites por posição, momento do sorteio,
   regras de troca de escolhas, reservas no sorteio, desempate de projeções e decisão 265.
@@ -182,17 +185,23 @@ lacunas listadas na seção 5, registrando cada decisão no próprio guia. Não 
 
 #### Igor (back-end)
 
-| Ordem  | Tarefa                      | Entrega                                                        | Depende de  |
-| ------ | --------------------------- | -------------------------------------------------------------- | ----------- |
-| ~~I1~~ | `feat/contratos-draft`      | Contratos de jogador, equipe, draft e elenco (feito)           | Nada        |
-| ~~I2~~ | `chore/auth-better-auth`    | Better Auth, primeira migration, `/api/health`, sessão (feito) | Nada        |
-| I3     | Pesquisa                    | Fonte de dados do Brasileirão, com a decisão registrada aqui   | Nada        |
-| I4     | `feat/modelo-dados`         | Modelos de campeonato, liga, draft e elenco                    | I2 e P2     |
-| I5     | `feat/ingestao-jogadores`   | Carga de clubes e jogadores                                    | I3 e I4     |
-| I6     | `feat/api-ligas`            | Criar liga, convidar e entrar                                  | I4          |
-| I7     | `feat/api-draft`            | Motor do draft e endpoints                                     | I4 e I6     |
-| I8     | `feat/api-jogadores-elenco` | Endpoints de jogadores e elenco                                | I4 e I5     |
-| I9     | `chore/deploy-vercel`       | Deploy em produção (Vercel Hobby, `gru1`)                      | Em paralelo |
+| Ordem  | Tarefa                        | Entrega                                                        | Depende de   |
+| ------ | ----------------------------- | -------------------------------------------------------------- | ------------ |
+| ~~I1~~ | `feat/contratos-draft`        | Contratos de jogador, equipe, draft e elenco (feito)           | Nada         |
+| ~~I2~~ | `chore/auth-better-auth`      | Better Auth, primeira migration, `/api/health`, sessão (feito) | Nada         |
+| ~~I3~~ | Pesquisa                      | Fonte de dados: API do Cartola (feito)                         | Nada         |
+| I4     | `feat/modelo-dados`           | Modelos de campeonato, liga, draft e elenco                    | I2 e P2      |
+| I5     | `feat/ingestao-jogadores`     | Interface de fonte, adaptador do Cartola, clubes e jogadores   | I4           |
+| I6     | `feat/api-ligas`              | Criar liga, convidar e entrar                                  | I4           |
+| I7     | `feat/api-draft`              | Motor do draft e endpoints                                     | I4 e I6      |
+| I8     | `feat/api-jogadores-elenco`   | Endpoints de jogadores e elenco                                | I4 e I5      |
+| I9     | `chore/deploy-vercel`         | Deploy em produção (Vercel Hobby, `gru1`)                      | Em paralelo  |
+| I10    | `feat/captura-historico-2026` | Guardar os dados brutos da temporada 2026                      | Ver prazo    |
+| I11    | `feat/projecoes-rankings`     | Calcular projeções e rankings                                  | I4, I5 e I10 |
+
+**Prazo da I10:** rodar depois da rodada 38 (2026-12-02) e antes da virada da temporada. A API do
+Cartola parece expor só a temporada atual, e sem esse histórico não há base para as projeções
+de 2027.
 
 Os contratos tratam regras como dados (`rodadas`, `segundosPorEscolha`, `composicaoElenco`),
 então fechar as lacunas de P2 não deve mudar o formato deles.
@@ -203,7 +212,8 @@ então fechar as lacunas de P2 não deve mudar o formato deles.
   schemas de `src/contracts/sessao.ts`. Depende do item 6 da configuração manual.
 - Ligar perfil, Draft Board e elenco aos endpoints reais, com um PR do PH para
   cada um, conforme I7 e I8 ficarem prontos.
-- Antes do lançamento público: serviço de e-mail para verificação de conta e recuperação
+- Antes do lançamento público: revisão dos termos do Cartola, orientação jurídica sobre
+  dados, nomes e escudos, e serviço de e-mail para verificação de conta e recuperação
   de senha.
 - Depois do draft: pontuação, escalação, confrontos e classificação. Exigem fechar os
   pontos em aberto de pontuação e formato de liga.
