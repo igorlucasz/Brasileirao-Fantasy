@@ -14,6 +14,17 @@ recente no topo.** Use o modelo abaixo.
 
 ---
 
+## 2026-11-07 — P1 e integração das atualizações da main
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** trabalho da P1 salvo em `16aaebf`; conflitos de contexto e histórico
+  resolvidos preservando as contribuições dos dois devs. Integrados guia, contratos
+  e Better Auth do Igor. Página inicial, layouts, navegação e formulários visuais
+  preservados; sem ligar autenticação ou aplicar migrations na `dev-ph`.
+- **Arquivos principais:** `docs/CONTEXTO.md`, `docs/HISTORICO.md`, `src/app/`,
+  `src/components/`.
+
 ## 2026-11-07 — Cores por posição nos jogadores
 
 - **Quem:** PH (com Codex)
@@ -137,10 +148,31 @@ recente no topo.** Use o modelo abaixo.
   Classificação. Login e cadastro com validação visual acessível, sem API ou sessão.
 - **Arquivos principais:** `src/app/`, `src/components/`, `docs/CONTEXTO.md`.
 
+## 2026-11-07 — Autenticação com Better Auth
+
+- **Quem:** Igor (com Claude Code)
+- **Branch / PR:** `chore/auth-better-auth` (#4)
+- **Resumo:** cadastro, login e logout por e-mail e senha com Better Auth 1.7.18, usando o
+  cliente Prisma existente. Primeira migration aplicada na `dev-igor`, pela URL pooled.
+  Criados `GET /api/health`, `GET /api/sessao`, os contratos de sessão e saúde e o
+  `authClient` para as telas. Fluxo testado de ponta a ponta. O merge passou a ser
+  decidido de forma independente por cada dev.
+- **Arquivos principais:** `src/server/auth/`, `src/app/api/`, `src/lib/auth-client.ts`,
+  `src/contracts/sessao.ts`, `prisma/schema.prisma`, `prisma/migrations/`.
+
+## 2026-11-07 — Contratos do draft e guia do produto
+
+- **Quem:** Igor (com Claude Code)
+- **Branch / PR:** `feat/contratos-draft` (#3)
+- **Resumo:** contratos de jogador, equipe, draft, elenco e erro criados a partir do
+  `docs/GUIA.md`, que entrou no repo como referência do produto. Os demais documentos
+  foram alinhados ao guia, e o merge de todo PR passou a ser decidido pelo Igor.
+- **Arquivos principais:** `src/contracts/`, `docs/GUIA.md`, `docs/CONTEXTO.md`, `AGENTS.md`.
+
 ## 2026-11-07 — Arquitetura e divisão de tarefas
 
 - **Quem:** Igor (com Claude Code)
-- **Branch / PR:** `docs/planejamento-tarefas`
+- **Branch / PR:** `docs/planejamento-tarefas` (#2)
 - **Resumo:** registro da macroarquitetura e das tarefas separadas entre PH e Igor,
   com dependências, para os dois trabalharem de forma independente. Decididos o draft
   snake com jogador exclusivo, o polling na sala do draft e o contrato antes da tela.
