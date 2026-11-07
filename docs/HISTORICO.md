@@ -14,6 +14,129 @@ recente no topo.** Use o modelo abaixo.
 
 ---
 
+## 2026-11-07 — Cores por posição nos jogadores
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** etiquetas com fundo vermelho (ATA), verde (MEI), azul (DEF) e
+  roxo (GOL), conforme pedido do PH, em Partida, Elenco e Jogadores.
+- **Arquivos principais:** `src/app/globals.css`, `src/components/league-preview.tsx`,
+  `src/components/player-browser.tsx`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Restauração da interface anterior ao Draft Board
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** removidos a rota, os componentes, os dados de demonstração e os
+  estilos do Draft Board, além do acesso na aba Liga, por pedido do PH.
+  Preservadas a identidade DORMINHOCO e as quatro abas com os elencos definidos.
+  Pesquisa de fontes cancelada sem mudanças no back-end ou banco.
+- **Arquivos principais:** `src/app/(app)/liga/page.tsx`, `src/app/globals.css`,
+  `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Prévia interativa autorizada do Draft
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** PH autorizou dados de demonstração para avaliar o Board e o modal.
+  `/draft` exibe 4 equipes clicáveis, com elencos completos, parciais e vazio,
+  identificação explícita dos dados fictícios e acesso pela aba Liga.
+  Integração final continua reservada a dados reais.
+- **Arquivos principais:** `src/components/draft/demo-data.ts`,
+  `src/app/(app)/draft/page.tsx`, `src/app/(app)/liga/page.tsx`.
+
+## 2026-11-07 — Consulta de elencos no Draft: estrutura de interface
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** base de Draft Board com cabeçalhos clicáveis e modal central,
+  decisão 265 C confirmada pelo PH. Lista por posição/projeção, etiquetas
+  compartilhadas e posições vazias; testes de ordenação e exclusividade.
+  `/draft` permanece sem dados até contratos/API reais; sem jogadores inventados.
+- **Arquivos principais:** `src/components/draft/`, `src/app/(app)/draft/page.tsx`,
+  `src/app/globals.css`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Reservas livres por posição
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** PH definiu as cinco vagas do banco sem cotas por posição.
+  Prévia do PH FC exemplifica 4 ATA e 1 GOL; textos de Elenco e Partida
+  informam a liberdade de composição. Formação titular permanece 1/3/3/2.
+- **Arquivos principais:** `src/components/league-preview.tsx`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Elenco com 9 titulares e 5 reservas
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** regra do PH aplicada aos dois times da prévia: 1 GOL, 3 DEF,
+  3 MEI e 2 ATA titulares, mais 5 reservas. Elenco e Partida separam os grupos;
+  Jogadores distingue atletas dos times e opções de waiver. Placares ilustrativos
+  consistentes entre Partida e Liga, sem definir pontuação ou substituição do banco.
+- **Arquivos principais:** `src/components/league-preview.tsx`,
+  `src/components/player-browser.tsx`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Prévia de conta dentro de uma liga
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** cenário visual PH / PH FC / Liga dos Amigos nas quatro abas, com
+  comparação de elencos, elenco, busca e filtros de jogadores, confrontos e
+  classificação. Dados explicitamente fictícios; sem sessão ou alterações no waiver.
+- **Arquivos principais:** `src/app/(app)/`, `src/components/league-preview.tsx`,
+  `src/components/player-browser.tsx`, `src/components/app-header.tsx`.
+
+## 2026-11-07 — Navegação Partida, Elenco, Jogadores e Liga
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** abas reorganizadas conforme definição do PH, com rotas e textos
+  específicos para confronto, elenco, jogadores/waiver e visão da liga.
+  Links anteriores redirecionam às novas áreas; funcionalidades seguem pendentes.
+- **Arquivos principais:** `src/components/app-header.tsx`, `src/app/(app)/`,
+  `src/app/(auth)/layout.tsx`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Identidade DORMINHOCO nas demais telas
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** identidade aprovada aplicada ao login, cadastro, Ligas, Meu time,
+  Rodada e Classificação. Montserrat global, coroa compartilhada, marca DORMINHOCO,
+  verdes e amarelo nos componentes, arcos discretos e navegação adaptada ao celular.
+- **Arquivos principais:** `src/app/`, `src/components/`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Boas-vindas DORMINHOCO
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** tela inicial refeita conforme especificação DORMINHOCO: fundo
+  esmeralda, arcos amarelo e azul, coroa geométrica e Montserrat. Somente duas
+  ações, Criar conta e Entrar, ligadas às rotas existentes, sem autenticação fictícia.
+- **Arquivos principais:** `src/app/page.tsx`, `src/app/globals.css`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Fundo azulado mais escuro
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** fundo global escurecido de `#0d0e21` para `#090a18`, a pedido do PH.
+- **Arquivos principais:** `src/app/globals.css`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — Ajuste da cor de fundo
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** fundo global alterado para `#0d0e21`, conforme pedido do PH.
+- **Arquivos principais:** `src/app/globals.css`, `docs/CONTEXTO.md`.
+
+## 2026-11-07 — P1: layout, navegação e telas de acesso
+
+- **Quem:** PH (com Codex)
+- **Branch / PR:** `feat/layout-e-telas-auth`
+- **Resumo:** tema base escuro com destaque verde, página inicial, layout da área
+  do app com navegação e páginas de espera para Ligas, Meu time, Rodada e
+  Classificação. Login e cadastro com validação visual acessível, sem API ou sessão.
+- **Arquivos principais:** `src/app/`, `src/components/`, `docs/CONTEXTO.md`.
+
 ## 2026-11-07 — Arquitetura e divisão de tarefas
 
 - **Quem:** Igor (com Claude Code)

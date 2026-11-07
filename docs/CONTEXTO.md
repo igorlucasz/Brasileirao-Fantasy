@@ -4,7 +4,7 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-07 (Igor, arquitetura e divisão de tarefas)._
+_Última atualização: 2026-11-07 (PH, P1: layout e telas de acesso)._
 
 ## 1. Visão geral
 
@@ -78,16 +78,62 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 | 2026-11-07 | Draft sincronizado por polling de 2 a 3 segundos, com prazo salvo no banco                           | A Vercel não é adequada para manter WebSockets abertos e funções serverless não guardam estado.                                                                                                                                                  |
 | 2026-11-07 | Contrato antes da tela, com as regras do draft como dados                                            | O PH constrói com mocks sem esperar a API, e ajustar uma regra não muda o contrato.                                                                                                                                                              |
 
+Decisão de interface de 2026-11-07 (P1): tema base escuro com destaque verde,
+fundo global `#090a18` (azulado mais escuro, a pedido do PH),
+componentes compartilhados e layouts separados para acesso e aplicativo. Mantém a
+identidade visual consistente; somente formulários e navegação ativa usam componentes
+cliente. As rotas do aplicativo são prévias públicas até a integração do Better Auth.
+
+Decisão de interface de 2026-11-07 (DORMINHOCO): a tela inicial passa a seguir a
+receita visual do PH: verde-esmeralda, arcos amarelo e azul, coroa geométrica,
+Montserrat ExtraBold e somente os links Criar conta e Entrar na página inicial.
+A pedido do PH, a identidade se estende também ao login, cadastro e às quatro abas:
+fundo esmeralda, superfícies verdes, ações amarelas, coroa e marca DORMINHOCO,
+com Montserrat global. Substitui o tema anterior em todas as telas. Os formulários
+seguem visuais até I2; os arcos são menores nas páginas internas para priorizar o conteúdo.
+
+Decisão de navegação de 2026-11-07 (PH): as abas passam a ser Partida (comparação
+com o elenco adversário), Elenco (seu time), Jogadores (informações e waiver) e
+Liga (confrontos da rodada e classificação). As rotas antigas redirecionam para
+as novas áreas. As funcionalidades com dados reais (comparação, waiver e dados
+da liga) serão integradas nas próximas tarefas; a apresentação está em prévia.
+
+Decisão de interface de 2026-11-07 (PH): prévia da experiência dentro de uma liga,
+com perfil PH, time PH FC e Liga dos Amigos. Partida compara amostras de elencos;
+Elenco mostra jogadores; Jogadores permite busca, filtro e expansão de informações;
+Liga apresenta confrontos e classificação ilustrativos. Exemplos de apresentação
+ficam nos componentes, pois não existem contratos; não são mocks de API. Não há
+sessão real, cadastro, pontuação oficial ou aquisição no waiver. Os resultados exibidos não definem regras de pontuação.
+
+Decisão de produto de 2026-11-07 (PH): cada elenco terá **14 jogadores**, sendo
+**9 titulares: 1 GOL, 3 DEF, 3 MEI e 2 ATA**, mais **5 reservas**. Definição
+explícita do PH, aplicada à prévia de Elenco e aos dois times na aba Partida.
+As **5 vagas de reserva são livres por posição**, sem mínimo ou máximo por posição
+dentro dessas vagas (por exemplo: 4 ATA e 1 GOL), conforme esclarecimento do PH
+em 2026-11-07. Regras de substituição e pontuação do banco continuam em aberto. Os placares da prévia somam apenas os titulares como exemplo,
+sem estabelecer a regra definitiva. Contratos e banco não foram alterados.
+
+Decisão de 2026-11-07 (PH): implementação e prévia do Draft Board removidas
+por solicitação do usuário, restaurando a interface anterior. Permanecem Partida,
+Elenco, Jogadores e Liga, com 9 titulares e 5 reservas livres por posição.
+A pesquisa de fornecedores iniciada foi cancelada, sem alteração de back-end,
+schema, contratos ou banco.
+
+Decisão visual de 2026-11-07 (PH): etiquetas de posição em Partida, Elenco e
+Jogadores usam fundo vermelho para ATA, verde para MEI, azul para DEF e roxo
+para GOL, com abreviação branca legível. Paleta centralizada no tema CSS.
+
 ## 5. Pontos em aberto (não decidir sem conversar)
 
 - **Fonte dos dados reais do Brasileirão**: jogadores, partidas, scouts. API
   paga? Gratuita? Scraping? Impacta custo, legalidade e frequência de atualização.
 - **Sistema de pontuação**: quais scouts valem pontos e quanto.
 - **Formato de liga**: número de times, temporada regular, playoffs?
-- **Regras do draft**: rodadas, tempo por escolha, composição do elenco, ordem inicial
+- **Regras do draft**: rodadas, tempo por escolha, ordem inicial
   e tempo esgotado. O PH propõe em `docs/REGRAS-DRAFT.md` (snake e exclusividade já
   estão decididos).
-- **Escalação**: formação tática e trocas depois do draft.
+- **Escalação**: titulares definidos em 1 GOL, 3 DEF, 3 MEI e 2 ATA; faltam
+  5 reservas de qualquer posição; faltam regras de troca e pontuação do banco.
 - **Modelo de dados**: depende das regras do draft e da fonte de dados.
 - **Custos futuros de hospedagem**: quando sair do Vercel Hobby e do plano grátis do Neon.
 
@@ -110,7 +156,13 @@ O que já existe e funciona (esqueleto, 2026-11-04):
 - GitHub: PH (`pauloh-12`) já é colaborador do repositório e a `main` está protegida.
 - `AGENTS.md`, `CLAUDE.md`, este arquivo e `HISTORICO.md`.
 
-O que **não** existe ainda: autenticação, modelos de banco, endpoints, telas,
+P1 implementado: página inicial, tema base, navegação responsiva, layouts de acesso
+e aplicativo, login e cadastro com validação visual. Rotas `/partida`, `/elenco`,
+`/jogadores` e `/liga` têm prévias com PH, PH FC e Liga dos Amigos. Os dados são
+exemplos fictícios de apresentação, sem formato de API ou regra de negócio.
+Nenhum formulário envia dados ou cria sessão/conta.
+
+O que **não** existe ainda: autenticação, modelos de banco, endpoints, telas de negócio,
 ingestão de dados, deploy na Vercel, tabelas no banco.
 
 ## 7. Próximos passos
@@ -141,13 +193,13 @@ As listas estão em ordem. Tarefas sem dependência entre si podem andar em para
 
 #### PH (front-end)
 
-| Ordem | Tarefa                     | Entrega                                            | Depende de |
-| ----- | -------------------------- | -------------------------------------------------- | ---------- |
-| P1    | `feat/layout-e-telas-auth` | Layout, navegação, login e cadastro (só visual)    | Nada       |
-| P2    | `docs/regras-draft`        | Formato do Draft: `docs/REGRAS-DRAFT.md`           | Nada       |
-| P3    | `feat/perfil-jogadores`    | Lista, busca e perfil de jogadores, com mocks      | I1         |
-| P4    | `feat/draft-board`         | Draft Board e sala do draft, com simulação em mock | I1         |
-| P5    | `feat/painel-elenco`       | Painel de elenco, com mocks                        | I1         |
+| Ordem | Tarefa                     | Entrega                                                  | Depende de |
+| ----- | -------------------------- | -------------------------------------------------------- | ---------- |
+| P1    | `feat/layout-e-telas-auth` | Implementado: layout, navegação, login e cadastro visual | Nada       |
+| P2    | `docs/regras-draft`        | Formato do Draft: `docs/REGRAS-DRAFT.md`                 | Nada       |
+| P3    | `feat/perfil-jogadores`    | Lista, busca e perfil de jogadores, com mocks            | I1         |
+| P4    | `feat/draft-board`         | Draft Board e sala do draft, com simulação em mock       | I1         |
+| P5    | `feat/painel-elenco`       | Painel de elenco, com mocks                              | I1         |
 
 Detalhes de P1:
 
