@@ -19,10 +19,11 @@ recente no topo.** Use o modelo abaixo.
 - **Quem:** Igor (com Claude Code)
 - **Branch / PR:** `chore/setup-neon` (#1)
 - **Resumo:** o PR #1 tinha sido fechado sem merge, o que deixava a `main` sem o
-  `git-lfs` no devcontainer e sem o onboarding do PH. O PR foi reaberto e entrou
-  sem revisão, como exceção. Depois disso, o ruleset da `main` passou a exigir PR
-  com 1 aprovação e CI, além de bloquear force push e exclusão da branch.
-- **Arquivos principais:** `docs/CONTEXTO.md`, `docs/HISTORICO.md`.
+  `git-lfs` no devcontainer e sem o onboarding do PH; ele foi reaberto e entrou na
+  `main`. O ruleset da `main` foi ativado exigindo PR e CI, sem aprovação obrigatória,
+  e bloqueando force push e exclusão da branch. Regras atualizadas no `AGENTS.md` e
+  no `README.md`.
+- **Arquivos principais:** `AGENTS.md`, `README.md`, `docs/CONTEXTO.md`, `docs/HISTORICO.md`.
 
 ## 2026-11-04 — Onboarding do PH
 

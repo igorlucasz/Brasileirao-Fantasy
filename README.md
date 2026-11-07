@@ -71,4 +71,5 @@ Comandos de migration (`db:migrate`, `db:deploy`) são só para o Igor.
 2. `git checkout -b feat/minha-tarefa` (ou `fix/`, `chore/`, `docs/`)
 3. Commits pequenos em [Conventional Commits](https://www.conventionalcommits.org/pt-br/), em português.
 4. Antes do PR: `npm run lint && npm run typecheck && npm run build`.
-5. Abra o PR, preencha o template e peça revisão do outro dev. A `main` é protegida.
+5. Abra o PR e preencha o template. A `main` é protegida: o merge exige PR e CI passando, sem
+   aprovação obrigatória. Mudanças em `src/contracts/` precisam de acordo com o outro dev.

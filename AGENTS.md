@@ -82,7 +82,9 @@ Cada pasta tem um `README.md` explicando seu papel. Regras de dependência:
 
 ## Workflow do time
 
-- `main` é protegida: nada entra sem Pull Request revisado pelo outro dev.
+- `main` é protegida: nada entra sem Pull Request com o CI passando. A aprovação não é
+  obrigatória: cada dev cuida do seu território. Mudanças em `src/contracts/` continuam
+  exigindo acordo entre os dois.
 - Uma branch por tarefa, curta: `feat/...`, `fix/...`, `chore/...`, `docs/...`.
 - Antes de começar: `git checkout main && git pull`, depois `git checkout -b <branch>`.
 - Commits pequenos, [Conventional Commits](https://www.conventionalcommits.org/pt-br/)
