@@ -7,7 +7,7 @@ Sleeper: você monta um time com jogadores reais de clubes diferentes, pontua
 conforme eles jogam nas partidas reais e enfrenta outro membro da sua liga a
 cada rodada, em confronto direto.
 
-> Status: **esqueleto**. Ainda não há telas, endpoints nem autenticação.
+> Status: **esqueleto** com banco no Neon configurado. Ainda não há telas, endpoints nem autenticação.
 > Veja o estado atual em [`docs/CONTEXTO.md`](docs/CONTEXTO.md).
 
 ## Documentação
@@ -31,8 +31,11 @@ Prisma 7 · Better Auth · Zod · Vercel.
    **Create codespace on main**.
 2. Espere o setup terminar (ele roda `npm install` e instala as CLIs do
    Claude Code e do Codex — veja `.devcontainer/post-create.sh`).
-3. Configure as variáveis de ambiente (próxima seção).
-4. Rode `npm run dev` e abra a porta **3000** que o Codespace encaminhar.
+3. Faça login na sua IA pelo terminal do Codespace: `claude` (Igor) ou
+   `codex` (PH), e siga as instruções.
+4. Configure as variáveis de ambiente (próxima seção). Para trabalhar só no
+   front com mocks, dá para pular este passo.
+5. Rode `npm run dev` e abra a porta **3000** que o Codespace encaminhar.
 
 ## Variáveis de ambiente
 
@@ -68,4 +71,5 @@ Comandos de migration (`db:migrate`, `db:deploy`) são só para o Igor.
 2. `git checkout -b feat/minha-tarefa` (ou `fix/`, `chore/`, `docs/`)
 3. Commits pequenos em [Conventional Commits](https://www.conventionalcommits.org/pt-br/), em português.
 4. Antes do PR: `npm run lint && npm run typecheck && npm run build`.
-5. Abra o PR, preencha o template e peça revisão do outro dev. A `main` é protegida.
+5. Abra o PR e preencha o template. A `main` é protegida: o merge exige PR e CI passando, sem
+   aprovação obrigatória. Mudanças em `src/contracts/` precisam de acordo com o outro dev.

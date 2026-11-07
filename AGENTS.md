@@ -82,7 +82,9 @@ Cada pasta tem um `README.md` explicando seu papel. Regras de dependência:
 
 ## Workflow do time
 
-- `main` é protegida: nada entra sem Pull Request revisado pelo outro dev.
+- `main` é protegida: nada entra sem Pull Request com o CI passando. A aprovação não é
+  obrigatória: cada dev cuida do seu território. Mudanças em `src/contracts/` continuam
+  exigindo acordo entre os dois.
 - Uma branch por tarefa, curta: `feat/...`, `fix/...`, `chore/...`, `docs/...`.
 - Antes de começar: `git checkout main && git pull`, depois `git checkout -b <branch>`.
 - Commits pequenos, [Conventional Commits](https://www.conventionalcommits.org/pt-br/)
@@ -125,6 +127,20 @@ Cada pasta tem um `README.md` explicando seu papel. Regras de dependência:
   `npm install-scripts approve prisma @prisma/engines` para atualizar a lista.
 - **Tipos de rota do Next 16**: `LayoutProps`/`PageProps` são globais gerados
   pelo `next typegen` (por isso o `typecheck` roda ele antes do `tsc`).
+
+## Notas de front-end
+
+- **Server Components por padrão**: no App Router todo componente roda no
+  servidor, a menos que o arquivo comece com `"use client"`. Use `"use client"`
+  só onde há estado, eventos ou hooks (ex.: formulários), o mais "na ponta"
+  possível.
+- **Tailwind 4 não tem `tailwind.config`**: a configuração é em CSS, no
+  `src/app/globals.css` (`@import "tailwindcss"` e cores/fontes em `@theme`).
+  Para criar cores do tema, adicione variáveis lá em vez de criar arquivo de config.
+- Fontes Geist já carregadas em `src/app/layout.tsx` (`font-sans`, `font-mono`).
+- Textos da interface em português do Brasil; `<html lang="pt-BR">`.
+- O front não precisa de `DATABASE_URL` para rodar: dados vêm de `src/mocks/`
+  até o endpoint real existir.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
