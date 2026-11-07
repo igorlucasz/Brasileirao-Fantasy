@@ -4,7 +4,7 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-07 (Igor, proteção da `main` e merge do onboarding do PH)._
+_Última atualização: 2026-11-07 (Igor, arquitetura e divisão de tarefas)._
 
 ## 1. Visão geral
 
@@ -74,6 +74,9 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 | 2026-11-04 | Neon: projeto `Brasileirao-Fantasy` (sa-east-1, PG 18); branches `production`, `dev-igor`, `dev-ph`  | Uma branch por dev isola os dados de desenvolvimento; `production` fica reservada para o deploy na Vercel.                                                                                                                                       |
 | 2026-11-04 | `DATABASE_URL` de cada dev vem dos Codespaces Secrets; `.env.local` pode ficar com ela vazia         | Variável de ambiente já definida tem prioridade sobre o `.env.local` (Next e dotenv não sobrescrevem), então o segredo fica fora do disco.                                                                                                       |
 | 2026-11-07 | Ruleset da `main`: PR e CI obrigatórios, sem aprovação; sem force push e sem exclusão da branch      | Cada dev cuida do seu território e revisar todo o código do outro atrasaria os dois. Substitui a revisão obrigatória de 2026-11-04. Mudanças em `src/contracts/` continuam exigindo acordo. O check exigido é `Lint, formatação, tipos e build`. |
+| 2026-11-07 | Draft snake, com jogador exclusivo por time da liga                                                  | Modelo do Sleeper, que inspira o projeto. Combina com o Draft Board e o painel de elenco. As demais regras ficam com o PH.                                                                                                                       |
+| 2026-11-07 | Draft sincronizado por polling de 2 a 3 segundos, com prazo salvo no banco                           | A Vercel não é adequada para manter WebSockets abertos e funções serverless não guardam estado.                                                                                                                                                  |
+| 2026-11-07 | Contrato antes da tela, com as regras do draft como dados                                            | O PH constrói com mocks sem esperar a API, e ajustar uma regra não muda o contrato.                                                                                                                                                              |
 
 ## 5. Pontos em aberto (não decidir sem conversar)
 
@@ -81,9 +84,11 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
   paga? Gratuita? Scraping? Impacta custo, legalidade e frequência de atualização.
 - **Sistema de pontuação**: quais scouts valem pontos e quanto.
 - **Formato de liga**: número de times, temporada regular, playoffs?
-- **Draft / escalação**: draft (snake? leilão?) ou mercado livre com orçamento?
-  Jogador exclusivo por time na liga (estilo Sleeper) ou não? Formação tática?
-- **Modelo de dados**: depende dos pontos acima.
+- **Regras do draft**: rodadas, tempo por escolha, composição do elenco, ordem inicial
+  e tempo esgotado. O PH propõe em `docs/REGRAS-DRAFT.md` (snake e exclusividade já
+  estão decididos).
+- **Escalação**: formação tática e trocas depois do draft.
+- **Modelo de dados**: depende das regras do draft e da fonte de dados.
 - **Custos futuros de hospedagem**: quando sair do Vercel Hobby e do plano grátis do Neon.
 
 ## 6. Estado atual
@@ -102,7 +107,7 @@ O que já existe e funciona (esqueleto, 2026-11-04):
 - Zod instalado; `src/contracts/README.md` com exemplo comentado (nenhum contrato real ainda).
 - Estrutura de pastas por território, cada uma com `README.md`.
 - `.env.example`, `.gitignore`, devcontainer, CI no GitHub Actions e template de PR.
-- GitHub: PH (`pauloh-12`) já é colaborador do repositório.
+- GitHub: PH (`pauloh-12`) já é colaborador do repositório e a `main` está protegida.
 - `AGENTS.md`, `CLAUDE.md`, este arquivo e `HISTORICO.md`.
 
 O que **não** existe ainda: autenticação, modelos de banco, endpoints, telas,
@@ -132,7 +137,19 @@ ingestão de dados, deploy na Vercel, tabelas no banco.
 
 ### Tarefas atuais
 
-**PH — `feat/layout-e-telas-auth`** (só interface, sem integração com back-end)
+As listas estão em ordem. Tarefas sem dependência entre si podem andar em paralelo.
+
+#### PH (front-end)
+
+| Ordem | Tarefa                     | Entrega                                            | Depende de |
+| ----- | -------------------------- | -------------------------------------------------- | ---------- |
+| P1    | `feat/layout-e-telas-auth` | Layout, navegação, login e cadastro (só visual)    | Nada       |
+| P2    | `docs/regras-draft`        | Formato do Draft: `docs/REGRAS-DRAFT.md`           | Nada       |
+| P3    | `feat/perfil-jogadores`    | Lista, busca e perfil de jogadores, com mocks      | I1         |
+| P4    | `feat/draft-board`         | Draft Board e sala do draft, com simulação em mock | I1         |
+| P5    | `feat/painel-elenco`       | Painel de elenco, com mocks                        | I1         |
+
+Detalhes de P1:
 
 - Layout da área logada em `src/app/(app)/layout.tsx`: cabeçalho, navegação
   (Ligas, Meu time, Rodada, Classificação) e tema base em `src/app/globals.css`.
@@ -144,18 +161,34 @@ ingestão de dados, deploy na Vercel, tabelas no banco.
 - Pode substituir a página inicial provisória (`src/app/page.tsx`).
 - Não precisa de contratos nem mocks nesta tarefa.
 
-**Igor — `chore/auth-better-auth`**
+Detalhes de P2: o documento define número de rodadas, tempo por escolha, composição
+do elenco, ordem inicial e o que acontece se o tempo acabar ou alguém faltar. O PH
+propõe e combina com o Igor. Não depende de código.
 
-- Modelos de usuário/sessão do Better Auth, primeira migration e rotas de auth.
-- `GET /api/health` que testa a conexão com o banco.
-- Primeiro contrato em `src/contracts/` (usuário/sessão), combinado com o PH,
-  para ele ligar as telas de login/cadastro ao back-end na tarefa seguinte.
-- Em paralelo: conectar a Vercel e pesquisar a fonte de dados do Brasileirão.
+#### Igor (back-end)
 
-**Os dois**
+| Ordem | Tarefa                      | Entrega                                                            | Depende de  |
+| ----- | --------------------------- | ------------------------------------------------------------------ | ----------- |
+| I1    | `feat/contratos-draft`      | Contratos de jogador, draft e elenco, combinados com o PH          | Nada        |
+| I2    | `chore/auth-better-auth`    | Better Auth, primeira migration, `/api/health`, contrato de sessão | Nada        |
+| I3    | Pesquisa                    | Fonte de dados do Brasileirão, com a decisão registrada aqui       | Nada        |
+| I4    | `feat/modelo-dados`         | Modelos de campeonato, liga, draft e elenco                        | I2 e P2     |
+| I5    | `feat/ingestao-jogadores`   | Carga de clubes e jogadores                                        | I3 e I4     |
+| I6    | `feat/api-ligas`            | Criar liga, convidar e entrar                                      | I4          |
+| I7    | `feat/api-draft`            | Motor do draft e endpoints                                         | I4 e I6     |
+| I8    | `feat/api-jogadores-elenco` | Endpoints de jogadores e elenco                                    | I4 e I5     |
+| I9    | `chore/deploy-vercel`       | Deploy em produção (Vercel Hobby, `gru1`)                          | Em paralelo |
 
-- Conversa para fechar pontuação, formato de liga e draft (seção 5), e definir os
-  próximos contratos (liga, time, rodada).
+I1 vem primeiro porque libera P3, P4 e P5. As regras entram como dados
+(`rodadas`, `segundosPorEscolha`, `composicaoElenco`), então os contratos usam
+valores provisórios e não esperam P2.
+
+#### Integração e fases seguintes
+
+- Ligar auth, perfil, Draft Board e elenco aos endpoints reais, com um PR do PH para
+  cada um, conforme I2, I7 e I8 ficarem prontos.
+- Depois do draft: pontuação, escalação, confrontos e classificação. Exigem fechar os
+  pontos em aberto de pontuação e formato de liga.
 
 ### Pendências técnicas para lembrar
 
@@ -165,3 +198,64 @@ ingestão de dados, deploy na Vercel, tabelas no banco.
 - Codespaces criados antes da feature `git-lfs` no devcontainer precisam de
   **Rebuild Container** (ou apagar os hooks em `.git/hooks`) para commit e push
   funcionarem.
+
+## 8. Arquitetura
+
+Um único app Next.js contém o front e a API, e um único deploy na Vercel publica os dois.
+
+```text
+Navegador
+  telas React (Client Components) e HTML vindo dos Server Components
+        | HTTPS: JSON validado pelos contratos Zod
+        v
+Vercel (funções serverless em São Paulo, gru1)
+  src/app/(app) e (auth)   telas                 PH
+  src/app/api              route handlers        Igor
+  src/server/services      regras de negócio     Igor
+  src/server/db            cliente Prisma        Igor
+        | SQL pelo pooler do Neon
+        v
+Neon (PostgreSQL em São Paulo)
+        ^
+        | grava clubes, jogadores, partidas e scouts
+src/server/ingestion  <-- rota protegida  <-- GitHub Action agendado
+        ^
+        | busca os dados
+Fonte externa do Brasileirão (ainda não definida)
+```
+
+### Caminho de uma requisição
+
+Exemplo: escolher um jogador no draft.
+
+1. A tela chama `POST /api/drafts/:id/escolhas`.
+2. O route handler confere a sessão do Better Auth e valida o corpo com o Zod.
+3. O service `draft` confere se é a vez do time e se o jogador está livre.
+4. O Prisma grava a escolha em uma transação no Neon.
+5. A resposta volta no formato do contrato, e a tela atualiza.
+
+Serverless não mantém processo ligado: cada requisição pode rodar em uma instância
+nova, então todo estado compartilhado fica no banco. Com `cacheComponents` ativo, os
+dados são dinâmicos por padrão e o cache é opcional; dados do usuário não são cacheados.
+
+### Draft
+
+- **Sincronização:** a tela consulta `GET /api/drafts/:id` a cada 2 ou 3 segundos.
+- **Relógio:** o banco guarda o prazo da escolha atual como data absoluta. A tela só faz
+  a contagem regressiva, e quem decide é o servidor.
+- **Disputa:** índices únicos em `(draftId, jogadorId)` e `(draftId, numeroEscolha)`
+  impedem que o mesmo jogador vá para dois times em requisições simultâneas.
+- **Tempo esgotado:** a próxima requisição detecta o prazo vencido e faz a escolha
+  automática na mesma transação. Sem ninguém na sala, o draft só avança quando alguém
+  voltar, o que é aceitável para ligas de amigos.
+- **Custo:** o polling consome funções da Vercel e computação do Neon. Se apertar, um
+  serviço de tempo real pode substituir a sincronização sem mudar as regras.
+
+### Dados planejados
+
+- **Campeonato:** `Clube`, `Jogador`, `Partida`, `Scout`.
+- **Usuários:** tabelas do Better Auth.
+- **Liga:** `Liga`, `MembroLiga`.
+- **Draft:** `Draft`, `EscolhaDraft`.
+- **Elenco:** `JogadorElenco`, criado pelas escolhas do draft.
+- **Depois:** `Escalacao`, `PontuacaoRodada`, `Confronto`.
