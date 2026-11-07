@@ -14,6 +14,15 @@ recente no topo.** Use o modelo abaixo.
 
 ---
 
+## 2026-11-07 — Fonte de dados
+
+- **Quem:** Igor (com Claude Code)
+- **Branch / PR:** `docs/fonte-dados-cartola` (#6)
+- **Resumo:** definida a API do Cartola como fonte, com possibilidade de troca, e produto
+  público em 2027. Rotas testadas, mapeamentos e riscos registrados em `FONTE-DADOS.md`.
+  Adicionadas as tarefas de captura do histórico de 2026 (I10) e projeções (I11).
+- **Arquivos principais:** `docs/FONTE-DADOS.md`, `docs/CONTEXTO.md`.
+
 ## 2026-11-07 — Autenticação com Better Auth
 
 - **Quem:** Igor (com Claude Code)
