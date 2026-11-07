@@ -4,7 +4,7 @@
 > tarefa e atualizá-lo quando uma decisão, o estado ou os próximos passos
 > mudarem. O registro cronológico do que foi feito fica em [`HISTORICO.md`](HISTORICO.md).
 
-_Última atualização: 2026-11-04 (Igor, setup do Neon e onboarding do PH)._
+_Última atualização: 2026-11-07 (Igor, proteção da `main` e merge do onboarding do PH)._
 
 ## 1. Visão geral
 
@@ -53,26 +53,28 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 
 ## 4. Decisões tomadas
 
-| Data       | Decisão                                                                                              | Motivo                                                                                                                                        |
-| ---------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-11-04 | Stack da seção 3 (Next.js fullstack, Tailwind, Neon, Prisma 7, Better Auth, Zod, Vercel Hobby)       | Ver coluna "Motivo" da seção 3.                                                                                                               |
-| 2026-11-04 | Neon em vez de Supabase                                                                              | Plano grátis do Supabase pausa projetos inativos; Neon tem branching de banco.                                                                |
-| 2026-11-04 | Divisão por territórios (pastas com dono) e `src/contracts/` compartilhado                           | Dois devs com duas IAs diferentes: evitar conflitos e deixar claro quem decide o quê.                                                         |
-| 2026-11-04 | `main` protegida, PR com revisão do outro dev, branches curtas, Conventional Commits em português    | Workflow simples e seguro para iniciantes-intermediários.                                                                                     |
-| 2026-11-04 | `AGENTS.md` é a fonte única de instruções; `CLAUDE.md` só contém `@AGENTS.md`                        | Codex lê `AGENTS.md`; Claude Code importa o mesmo arquivo. Evita duas versões divergentes das regras.                                         |
-| 2026-11-04 | Prisma fixado na 7.10.1 (versão exata)                                                               | O `latest` do npm já aponta para o Prisma 8 (release candidate); decidimos usar a v7 estável. Atualizar só de propósito.                      |
-| 2026-11-04 | Cliente Prisma gerado em `src/generated/prisma` (fora do Git), gerado no `postinstall`               | Padrão do Prisma 7 (`prisma-client` exige `output`). Gerar no install garante que CI e Vercel tenham o cliente sem commitar código gerado.    |
-| 2026-11-04 | `prisma.config.ts` carrega `.env.local` via dotenv                                                   | O Next.js lê `.env.local`, mas o Prisma CLI não; assim os dois usam o mesmo arquivo.                                                          |
-| 2026-11-04 | Cliente do banco em `src/server/db` com `server-only` e singleton em `globalThis`                    | Impede import acidental no front e evita múltiplos pools de conexão no hot reload do dev.                                                     |
-| 2026-11-04 | Uma única `DATABASE_URL` (pooled) por enquanto                                                       | Simplicidade. Se migrations pelo pooler derem problema, adicionar uma URL direta separada só para o CLI (ver próximos passos).                |
-| 2026-11-04 | `typecheck` = `next typegen && tsc --noEmit`                                                         | No Next 16 os tipos `LayoutProps`/`PageProps` são gerados; `next-env.d.ts` não é versionado, então o `tsc` puro falha num clone limpo.        |
-| 2026-11-04 | Prettier com `prettier-plugin-tailwindcss` e `printWidth` 100                                        | Ordena classes do Tailwind automaticamente, reduzindo diffs entre os dois devs.                                                               |
-| 2026-11-04 | `allowScripts` do npm 11 libera só `prisma` e `@prisma/engines`                                      | O npm 11 bloqueia scripts de instalação por padrão; o Prisma precisa do seu para baixar o schema engine (usado em migrations).                |
-| 2026-11-04 | Devcontainer: imagem Node 24; Claude Code pelo instalador nativo, Codex pelo npm                     | Instalador nativo é o método recomendado na doc do Claude Code; o pacote npm do Codex não depende de install scripts.                         |
-| 2026-11-04 | Devcontainer com as features `git-lfs` e `github-cli`                                                | O Codespace instala hooks do Git LFS ao clonar; sem o `git-lfs` na imagem, commit e push falham. O `gh` permite às IAs abrir e consultar PRs. |
-| 2026-11-04 | Histórico da `main` reescrito uma vez (remoção do trailer `Co-Authored-By` dos commits do esqueleto) | Pedido do Igor. Exceção pontual: a regra de nunca dar push direto na `main` continua valendo.                                                 |
-| 2026-11-04 | Neon: projeto `Brasileirao-Fantasy` (sa-east-1, PG 18); branches `production`, `dev-igor`, `dev-ph`  | Uma branch por dev isola os dados de desenvolvimento; `production` fica reservada para o deploy na Vercel.                                    |
-| 2026-11-04 | `DATABASE_URL` de cada dev vem dos Codespaces Secrets; `.env.local` pode ficar com ela vazia         | Variável de ambiente já definida tem prioridade sobre o `.env.local` (Next e dotenv não sobrescrevem), então o segredo fica fora do disco.    |
+| Data       | Decisão                                                                                              | Motivo                                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-04 | Stack da seção 3 (Next.js fullstack, Tailwind, Neon, Prisma 7, Better Auth, Zod, Vercel Hobby)       | Ver coluna "Motivo" da seção 3.                                                                                                                                  |
+| 2026-11-04 | Neon em vez de Supabase                                                                              | Plano grátis do Supabase pausa projetos inativos; Neon tem branching de banco.                                                                                   |
+| 2026-11-04 | Divisão por territórios (pastas com dono) e `src/contracts/` compartilhado                           | Dois devs com duas IAs diferentes: evitar conflitos e deixar claro quem decide o quê.                                                                            |
+| 2026-11-04 | `main` protegida, PR com revisão do outro dev, branches curtas, Conventional Commits em português    | Workflow simples e seguro para iniciantes-intermediários.                                                                                                        |
+| 2026-11-04 | `AGENTS.md` é a fonte única de instruções; `CLAUDE.md` só contém `@AGENTS.md`                        | Codex lê `AGENTS.md`; Claude Code importa o mesmo arquivo. Evita duas versões divergentes das regras.                                                            |
+| 2026-11-04 | Prisma fixado na 7.10.1 (versão exata)                                                               | O `latest` do npm já aponta para o Prisma 8 (release candidate); decidimos usar a v7 estável. Atualizar só de propósito.                                         |
+| 2026-11-04 | Cliente Prisma gerado em `src/generated/prisma` (fora do Git), gerado no `postinstall`               | Padrão do Prisma 7 (`prisma-client` exige `output`). Gerar no install garante que CI e Vercel tenham o cliente sem commitar código gerado.                       |
+| 2026-11-04 | `prisma.config.ts` carrega `.env.local` via dotenv                                                   | O Next.js lê `.env.local`, mas o Prisma CLI não; assim os dois usam o mesmo arquivo.                                                                             |
+| 2026-11-04 | Cliente do banco em `src/server/db` com `server-only` e singleton em `globalThis`                    | Impede import acidental no front e evita múltiplos pools de conexão no hot reload do dev.                                                                        |
+| 2026-11-04 | Uma única `DATABASE_URL` (pooled) por enquanto                                                       | Simplicidade. Se migrations pelo pooler derem problema, adicionar uma URL direta separada só para o CLI (ver próximos passos).                                   |
+| 2026-11-04 | `typecheck` = `next typegen && tsc --noEmit`                                                         | No Next 16 os tipos `LayoutProps`/`PageProps` são gerados; `next-env.d.ts` não é versionado, então o `tsc` puro falha num clone limpo.                           |
+| 2026-11-04 | Prettier com `prettier-plugin-tailwindcss` e `printWidth` 100                                        | Ordena classes do Tailwind automaticamente, reduzindo diffs entre os dois devs.                                                                                  |
+| 2026-11-04 | `allowScripts` do npm 11 libera só `prisma` e `@prisma/engines`                                      | O npm 11 bloqueia scripts de instalação por padrão; o Prisma precisa do seu para baixar o schema engine (usado em migrations).                                   |
+| 2026-11-04 | Devcontainer: imagem Node 24; Claude Code pelo instalador nativo, Codex pelo npm                     | Instalador nativo é o método recomendado na doc do Claude Code; o pacote npm do Codex não depende de install scripts.                                            |
+| 2026-11-04 | Devcontainer com as features `git-lfs` e `github-cli`                                                | O Codespace instala hooks do Git LFS ao clonar; sem o `git-lfs` na imagem, commit e push falham. O `gh` permite às IAs abrir e consultar PRs.                    |
+| 2026-11-04 | Histórico da `main` reescrito uma vez (remoção do trailer `Co-Authored-By` dos commits do esqueleto) | Pedido do Igor. Exceção pontual: a regra de nunca dar push direto na `main` continua valendo.                                                                    |
+| 2026-11-04 | Neon: projeto `Brasileirao-Fantasy` (sa-east-1, PG 18); branches `production`, `dev-igor`, `dev-ph`  | Uma branch por dev isola os dados de desenvolvimento; `production` fica reservada para o deploy na Vercel.                                                       |
+| 2026-11-04 | `DATABASE_URL` de cada dev vem dos Codespaces Secrets; `.env.local` pode ficar com ela vazia         | Variável de ambiente já definida tem prioridade sobre o `.env.local` (Next e dotenv não sobrescrevem), então o segredo fica fora do disco.                       |
+| 2026-11-07 | PR #1 entrou na `main` sem revisão do PH                                                             | Exceção pontual: o PH dependia desse merge para ter um Codespace funcional. A proteção da `main` foi ativada logo depois e a regra de revisão vale a partir daí. |
+| 2026-11-07 | Ruleset da `main`: PR com 1 aprovação, CI obrigatório, sem force push e sem exclusão da branch       | Garante por configuração o workflow de PR revisado. O check exigido é `Lint, formatação, tipos e build`.                                                         |
 
 ## 5. Pontos em aberto (não decidir sem conversar)
 
@@ -115,7 +117,7 @@ ingestão de dados, deploy na Vercel, tabelas no banco.
 2. ~~Adicionar o PH como colaborador~~ (feito).
 3. Passar ao PH, por canal privado, a connection string **pooled** da branch
    `dev-ph` (console do Neon → Connect → branch `dev-ph` → "Connection pooling" ligado).
-4. Proteger a `main` no GitHub (PR + 1 aprovação + CI obrigatório). **Ainda não feito.**
+4. ~~Proteger a `main` no GitHub (PR + 1 aprovação + CI obrigatório)~~ (feito).
 5. Conectar o repositório à Vercel (Hobby, funções em São Paulo `gru1`).
 
 ### Onboarding do PH (checklist)
@@ -149,8 +151,7 @@ ingestão de dados, deploy na Vercel, tabelas no banco.
 - `GET /api/health` que testa a conexão com o banco.
 - Primeiro contrato em `src/contracts/` (usuário/sessão), combinado com o PH,
   para ele ligar as telas de login/cadastro ao back-end na tarefa seguinte.
-- Em paralelo: proteger a `main`, conectar a Vercel e pesquisar a fonte de
-  dados do Brasileirão.
+- Em paralelo: conectar a Vercel e pesquisar a fonte de dados do Brasileirão.
 
 **Os dois**
 
