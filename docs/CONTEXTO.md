@@ -270,6 +270,10 @@ então fechar as lacunas de P2 não deve mudar o formato deles.
 
 ### Pendências técnicas para lembrar
 
+- Integração da P1 validada com lint, formatação, tipos e build. Neste Codespace,
+  o build passou com avisos do Better Auth por falta de `BETTER_AUTH_SECRET` e
+  `BETTER_AUTH_URL`; configurar no ambiente antes de testar autenticação real.
+
 - A primeira migration funcionou pela URL pooled, então não é preciso uma URL direta.
 - Codespaces criados antes da feature `git-lfs` no devcontainer precisam de
   **Rebuild Container** (ou apagar os hooks em `.git/hooks`) para commit e push

@@ -22,6 +22,9 @@ recente no topo.** Use o modelo abaixo.
   resolvidos preservando as contribuições dos dois devs. Integrados guia, contratos
   e Better Auth do Igor. Página inicial, layouts, navegação e formulários visuais
   preservados; sem ligar autenticação ou aplicar migrations na `dev-ph`.
+- **Validação:** `npm install`, lint, formatação, tipos e build concluídos.
+  Build encerra com sucesso, com avisos do Better Auth sobre configuração local
+  de segredo e URL pendente; nenhuma migration executada.
 - **Arquivos principais:** `docs/CONTEXTO.md`, `docs/HISTORICO.md`, `src/app/`,
   `src/components/`.
 
