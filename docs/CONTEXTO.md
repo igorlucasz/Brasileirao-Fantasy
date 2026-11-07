@@ -103,7 +103,7 @@ Prisma 7.10.1, Zod 4.6, Node 24 (mínimo 22.12), npm 11.
 
 ## 6. Estado atual
 
-O que já existe e funciona (esqueleto, 2026-11-04):
+O que já existe e funciona (até 2026-11-07):
 
 - App Next.js 16 com App Router, TypeScript, Tailwind e alias `@/*`; página
   inicial provisória em português.
@@ -123,7 +123,7 @@ O que já existe e funciona (esqueleto, 2026-11-04):
 - `AGENTS.md`, `CLAUDE.md`, este arquivo e `HISTORICO.md`.
 
 O que **não** existe ainda: modelos de negócio, endpoints do jogo, telas,
-ingestão de dados, deploy na Vercel, tabelas no banco.
+ingestão de dados, deploy na Vercel. As únicas tabelas são as do Better Auth, só na `dev-igor`.
 
 ## 7. Próximos passos
 

@@ -17,7 +17,7 @@ recente no topo.** Use o modelo abaixo.
 ## 2026-11-07 — Autenticação com Better Auth
 
 - **Quem:** Igor (com Claude Code)
-- **Branch / PR:** `chore/auth-better-auth`
+- **Branch / PR:** `chore/auth-better-auth` (#4)
 - **Resumo:** cadastro, login e logout por e-mail e senha com Better Auth 1.7.18, usando o
   cliente Prisma existente. Primeira migration aplicada na `dev-igor`, pela URL pooled.
   Criados `GET /api/health`, `GET /api/sessao`, os contratos de sessão e saúde e o
@@ -29,7 +29,7 @@ recente no topo.** Use o modelo abaixo.
 ## 2026-11-07 — Contratos do draft e guia do produto
 
 - **Quem:** Igor (com Claude Code)
-- **Branch / PR:** `feat/contratos-draft`
+- **Branch / PR:** `feat/contratos-draft` (#3)
 - **Resumo:** contratos de jogador, equipe, draft, elenco e erro criados a partir do
   `docs/GUIA.md`, que entrou no repo como referência do produto. Os demais documentos
   foram alinhados ao guia, e o merge de todo PR passou a ser decidido pelo Igor.
@@ -38,7 +38,7 @@ recente no topo.** Use o modelo abaixo.
 ## 2026-11-07 — Arquitetura e divisão de tarefas
 
 - **Quem:** Igor (com Claude Code)
-- **Branch / PR:** `docs/planejamento-tarefas`
+- **Branch / PR:** `docs/planejamento-tarefas` (#2)
 - **Resumo:** registro da macroarquitetura e das tarefas separadas entre PH e Igor,
   com dependências, para os dois trabalharem de forma independente. Decididos o draft
   snake com jogador exclusivo, o polling na sala do draft e o contrato antes da tela.
