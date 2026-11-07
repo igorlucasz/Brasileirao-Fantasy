@@ -14,6 +14,15 @@ recente no topo.** Use o modelo abaixo.
 
 ---
 
+## 2026-11-07 — Contratos do draft e guia do produto
+
+- **Quem:** Igor (com Claude Code)
+- **Branch / PR:** `feat/contratos-draft`
+- **Resumo:** contratos de jogador, equipe, draft, elenco e erro criados a partir do
+  `docs/GUIA.md`, que entrou no repo como referência do produto. Os demais documentos
+  foram alinhados ao guia, e o merge de todo PR passou a ser decidido pelo Igor.
+- **Arquivos principais:** `src/contracts/`, `docs/GUIA.md`, `docs/CONTEXTO.md`, `AGENTS.md`.
+
 ## 2026-11-07 — Arquitetura e divisão de tarefas
 
 - **Quem:** Igor (com Claude Code)

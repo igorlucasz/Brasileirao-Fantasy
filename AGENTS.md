@@ -5,12 +5,15 @@ diretamente; o Claude Code lê via `CLAUDE.md` (que só contém `@AGENTS.md`).
 **Uma fonte de verdade só: edite aqui, nunca no CLAUDE.md.**
 
 Antes de qualquer tarefa, leia também [`docs/CONTEXTO.md`](docs/CONTEXTO.md)
-(estado atual, decisões e pontos em aberto).
+(estado atual, decisões e pontos em aberto) e [`docs/GUIA.md`](docs/GUIA.md)
+(como o produto funciona). O guia é a referência do produto: em conflito de regra de
+produto, vale o guia. As seções 0 e 11 dele só se aplicam a sessões de decisão do
+produto, não a tarefas de implementação.
 
 ## Projeto
 
 **Brasileirão Fantasy**: plataforma web de fantasy football do Campeonato
-Brasileiro, inspirada no fantasy do Sleeper. O usuário monta um time com
+Brasileiro, inspirada no fantasy do Sleeper. O usuário monta uma equipe com
 jogadores reais de clubes diferentes; os jogadores pontuam conforme as partidas
 reais, e a cada rodada o usuário enfrenta outro membro da liga em confronto
 direto (head-to-head).
@@ -64,7 +67,7 @@ O `npm install` já roda `prisma generate` (postinstall).
 | `docs/`                 | **Os dois** | Contexto e histórico do projeto               |
 | `prisma/`               | Igor        | Schema e migrations                           |
 | `src/app/(auth)/`       | PH          | Telas de login e cadastro                     |
-| `src/app/(app)/`        | PH          | Ligas, time, rodada, classificação            |
+| `src/app/(app)/`        | PH          | Ligas, draft, equipe, rodada, classificação   |
 | `src/app/api/`          | Igor        | Route handlers (a API)                        |
 | `src/components/`       | PH          | Componentes de interface                      |
 | `src/server/db/`        | Igor        | Cliente Prisma (singleton)                    |
@@ -82,8 +85,8 @@ Cada pasta tem um `README.md` explicando seu papel. Regras de dependência:
 
 ## Workflow do time
 
-- `main` é protegida: nada entra sem Pull Request com o CI passando. A aprovação não é
-  obrigatória: cada dev cuida do seu território. Mudanças em `src/contracts/` continuam
+- `main` é protegida: nada entra sem Pull Request com o CI passando. Cada dev cuida do seu
+  território, e **todo merge é decidido pelo Igor**. Mudanças em `src/contracts/` continuam
   exigindo acordo entre os dois.
 - Uma branch por tarefa, curta: `feat/...`, `fix/...`, `chore/...`, `docs/...`.
 - Antes de começar: `git checkout main && git pull`, depois `git checkout -b <branch>`.
@@ -97,7 +100,7 @@ Cada pasta tem um `README.md` explicando seu papel. Regras de dependência:
 
 ## Regras para IAs
 
-1. Ler `AGENTS.md` e `docs/CONTEXTO.md` antes de qualquer tarefa.
+1. Ler `AGENTS.md`, `docs/CONTEXTO.md` e `docs/GUIA.md` antes de qualquer tarefa.
 2. Não alterar arquivos fora do território da tarefa atual. Não refatorar código
    não relacionado.
 3. Mudanças em `src/contracts/` exigem aviso explícito no PR.
@@ -112,6 +115,7 @@ Cada pasta tem um `README.md` explicando seu papel. Regras de dependência:
    precisam passar (e `npm run format:check`, que o CI também roda).
 9. Na dúvida sobre uma decisão de produto ou arquitetura, perguntar ao humano
    em vez de decidir sozinho.
+   Não fazer merge de PR sem autorização do Igor.
 10. Para ferramentas que mudam muito entre versões (Next.js 16, Prisma 7,
     Better Auth, Tailwind 4, Zod 4), consultar a documentação da versão
     instalada em vez de confiar na memória. Ver o bloco abaixo sobre Next.js.
